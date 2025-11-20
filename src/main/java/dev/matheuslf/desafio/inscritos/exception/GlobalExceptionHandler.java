@@ -16,6 +16,13 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e, WebRequest req) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponse response = toErrorResponse(e.getMessage(), req, status);
+        return new ResponseEntity<>(response, status);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, WebRequest req) {
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
