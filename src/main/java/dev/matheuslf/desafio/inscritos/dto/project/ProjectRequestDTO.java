@@ -10,6 +10,7 @@ public record ProjectRequestDTO(
         String name,
         @Size(max = 255)
         String description,
+        @NotNull
         @FutureOrPresent
         LocalDate startDate,
         @Future
