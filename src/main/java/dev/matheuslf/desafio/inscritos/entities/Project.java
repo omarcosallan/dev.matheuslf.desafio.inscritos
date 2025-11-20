@@ -2,6 +2,8 @@ package dev.matheuslf.desafio.inscritos.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,6 +14,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "projects")
 @Getter
+@Setter
+@RequiredArgsConstructor
 public class Project {
 
     @Id
@@ -21,7 +25,7 @@ public class Project {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 255)
     private String description;
 
     @Column(nullable = false)
