@@ -1,5 +1,6 @@
 package dev.matheuslf.desafio.inscritos.controller;
 
+import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
 import dev.matheuslf.desafio.inscritos.service.ProjectService;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/projects")
@@ -31,7 +31,10 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectResponseDTO>> findAll() {
-        return ResponseEntity.ok(projectService.findAll());
+    public ResponseEntity<PageResponse<ProjectResponseDTO>> findAll(@RequestParam(required = false, defaultValue = "0")
+                                                            Integer page,
+                                                                    @RequestParam(required = false, defaultValue = "10")
+                                                            Integer size) {
+        return ResponseEntity.ok(projectService.findAll(page, size));
     }
 }

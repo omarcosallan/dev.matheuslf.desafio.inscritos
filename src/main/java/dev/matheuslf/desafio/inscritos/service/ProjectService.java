@@ -1,14 +1,16 @@
 package dev.matheuslf.desafio.inscritos.service;
 
+import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +24,18 @@ public class ProjectService {
         return ProjectMapper.toDTO(savedProject);
     }
 
-    public List<ProjectResponseDTO> findAll() {
-        return projectRepository.findAll().stream()
-                .map(ProjectMapper::toDTO)
-                .toList();
+    public PageResponse<ProjectResponseDTO> findAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Project> projects = projectRepository.findAll(pageable);
+        PageResponse<ProjectResponseDTO> response = new PageResponse<>(
+                projects.getContent().stream().map(ProjectMapper::toDTO).toList(),
+                projects.getNumber(),
+                projects.getTotalPages(),
+                projects.getTotalElements(),
+                size,
+                projects.hasNext(),
+                projects.hasPrevious()
+        );
+        return response;
     }
 }
