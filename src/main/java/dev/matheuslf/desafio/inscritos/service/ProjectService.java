@@ -17,18 +17,19 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
 
     public ProjectResponseDTO save(ProjectRequestDTO dto) {
-        Project entity = ProjectMapper.toEntity(dto);
+        Project entity = projectMapper.toEntity(dto);
         Project savedProject = projectRepository.save(entity);
-        return ProjectMapper.toDTO(savedProject);
+        return projectMapper.toDTO(savedProject);
     }
 
     public PageResponse<ProjectResponseDTO> findAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Project> projects = projectRepository.findAll(pageable);
         PageResponse<ProjectResponseDTO> response = new PageResponse<>(
-                projects.getContent().stream().map(ProjectMapper::toDTO).toList(),
+                projects.getContent().stream().map(projectMapper::toDTO).toList(),
                 projects.getNumber(),
                 projects.getTotalPages(),
                 projects.getTotalElements(),
