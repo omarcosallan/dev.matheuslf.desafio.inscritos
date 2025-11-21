@@ -36,6 +36,13 @@ A modelagem pode ser modificada pelo inscrito. Porém, precisa ser justificado o
 
 ### 🌐 2. Endpoints REST
 
+#### Autenticação e Usuários
+| Método | Endpoint         | Descrição                                   |
+|---------|------------------|---------------------------------------------|
+| **POST** | `/auth/login`    | Autenticar usuário (retorna JWT token)      |
+| **POST** | `/users`         | Registrar novo usuário      |
+
+
 #### Projetos
 | Método | Endpoint | Descrição                                              |
 |---------|-----------|--------------------------------------------------------|
