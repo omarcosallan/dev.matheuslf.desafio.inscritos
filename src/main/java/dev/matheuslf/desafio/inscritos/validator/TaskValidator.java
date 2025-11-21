@@ -3,7 +3,7 @@ package dev.matheuslf.desafio.inscritos.validator;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.exception.ConflictException;
-import dev.matheuslf.desafio.inscritos.exception.InvalidDueDateException;
+import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
 import dev.matheuslf.desafio.inscritos.exception.ProjectEndedException;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +26,11 @@ public class TaskValidator {
 
     public void validateTaskDueDate(LocalDate taskDueDate, Project project) {
         if (taskDueDate.isAfter(project.getEndDate())) {
-            throw new InvalidDueDateException("A data de entrega da tarefa não pode ser posterior à data de término do projeto");
+            throw new InvalidDateException("A data de entrega da tarefa não pode ser posterior à data de término do projeto");
         }
 
         if (taskDueDate.isBefore(project.getStartDate())) {
-            throw new InvalidDueDateException("A data de entrega da tarefa não pode ser anterior à data de início do projeto");
+            throw new InvalidDateException("A data de entrega da tarefa não pode ser anterior à data de início do projeto");
         }
     }
 

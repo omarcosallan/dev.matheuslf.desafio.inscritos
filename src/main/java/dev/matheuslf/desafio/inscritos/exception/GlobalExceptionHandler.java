@@ -67,8 +67,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
     }
 
-    @ExceptionHandler(InvalidDueDateException.class)
-    public ResponseEntity<ProblemDetail> handleInvalidDueDateException(InvalidDueDateException e, HttpServletRequest req) {
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidDueDateException(InvalidDateException e, HttpServletRequest req) {
         ProblemDetail problem = new ProblemDetail(
                 "Data inválida",
                 e.getMessage(),

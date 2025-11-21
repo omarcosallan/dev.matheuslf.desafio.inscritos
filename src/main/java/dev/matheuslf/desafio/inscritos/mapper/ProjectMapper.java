@@ -5,6 +5,7 @@ import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
+import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,10 +51,16 @@ public class ProjectMapper {
         }
 
         if (dto.startDate() != null) {
+            if (dto.endDate().isBefore(dto.startDate())) {
+                throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
+            }
             project.setStartDate(dto.startDate());
         }
 
         if (dto.endDate() != null) {
+            if (dto.endDate().isBefore(dto.startDate())) {
+                throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
+            }
             project.setEndDate(dto.endDate());
         }
 
