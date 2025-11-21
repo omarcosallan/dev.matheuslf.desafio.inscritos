@@ -28,10 +28,10 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.TODO;
 
     @Enumerated(EnumType.STRING)
-    private Priority priority;
+    private Priority priority = Priority.LOW;
 
     private LocalDate dueDate;
 

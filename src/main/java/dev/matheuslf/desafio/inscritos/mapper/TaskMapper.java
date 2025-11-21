@@ -5,6 +5,8 @@ import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.UpdateTaskDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
+import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
+import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +25,12 @@ public class TaskMapper {
         Task task = new Task();
         task.setTitle(dto.title());
         task.setDescription(dto.description());
-        task.setStatus(dto.status());
-        task.setPriority(dto.priority());
+        if (dto.status() != null) {
+            task.setStatus(Status.valueOf(dto.status().toUpperCase()));
+        }
+        if (dto.priority() != null) {
+            task.setPriority(Priority.valueOf(dto.priority().toUpperCase()));
+        }
         task.setDueDate(dto.dueDate());
         task.setProject(project);
         return task;
@@ -52,11 +58,11 @@ public class TaskMapper {
         }
 
         if (dto.status() != null) {
-            task.setStatus(dto.status());
+            task.setStatus(Status.valueOf(dto.status().toUpperCase()));
         }
 
         if (dto.priority() != null) {
-            task.setPriority(dto.priority());
+            task.setPriority(Priority.valueOf(dto.priority().toUpperCase()));
         }
 
         if (dto.dueDate() != null) {

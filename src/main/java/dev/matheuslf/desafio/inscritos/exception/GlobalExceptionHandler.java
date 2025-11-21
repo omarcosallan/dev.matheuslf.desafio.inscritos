@@ -4,6 +4,7 @@ import dev.matheuslf.desafio.inscritos.dto.error.ProblemDetail;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -61,6 +62,18 @@ public class GlobalExceptionHandler {
                 new ProblemDetail(
                         "Parâmetro inválido",
                         detail,
+                        HttpStatus.BAD_REQUEST.value(),
+                        getRequestPath(request));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ProblemDetail> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
+        ProblemDetail problem =
+                new ProblemDetail(
+                        "Solicitação JSON malformada",
+                        "O corpo da solicitação é inválido ou está malformado",
                         HttpStatus.BAD_REQUEST.value(),
                         getRequestPath(request));
 
