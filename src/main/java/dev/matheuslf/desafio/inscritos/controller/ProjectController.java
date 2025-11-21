@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -38,6 +39,11 @@ public class ProjectController {
                                                                     @RequestParam(required = false, defaultValue = "10")
                                                             Integer size) {
         return ResponseEntity.ok(projectService.findAll(page, size));
+    }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<ProjectResponseDTO>> findByOwner(@PathVariable(value = "ownerId") UUID ownerId) {
+        return ResponseEntity.ok(projectService.findByOwner(ownerId));
     }
 
     @PutMapping("/{id}")
