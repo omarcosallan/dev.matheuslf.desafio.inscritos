@@ -26,6 +26,7 @@ public class SecurityConfig {
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private static final String ADMIN_ROLE = "ADMIN";
     private static final String TASKS_PARAMS_PATH = "/tasks/**";
+    private static final String PROJECTS_PARAMS_PATH = "/projects/**";
 
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers("/projects").hasRole(ADMIN_ROLE)
+                        .requestMatchers(PROJECTS_PARAMS_PATH).authenticated()
                         .requestMatchers(HttpMethod.POST, "/tasks").hasRole(ADMIN_ROLE)
                         .requestMatchers(HttpMethod.GET, TASKS_PARAMS_PATH).authenticated()
                         .requestMatchers(HttpMethod.PUT, TASKS_PARAMS_PATH).authenticated()
