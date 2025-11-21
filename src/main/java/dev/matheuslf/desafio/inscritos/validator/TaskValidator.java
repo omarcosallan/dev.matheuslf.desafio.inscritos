@@ -36,7 +36,7 @@ public class TaskValidator {
 
     public void validateTaskName(Task task) {
         if (existsRegisteredTask(task)) {
-            throw new ConflictException("Já existe uma tarefa com esse nome neste projeto.");
+            throw new ConflictException("Já existe uma tarefa com esse nome neste projeto");
         }
     }
 
