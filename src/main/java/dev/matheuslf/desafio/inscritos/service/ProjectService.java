@@ -7,7 +7,7 @@ import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Role;
-import dev.matheuslf.desafio.inscritos.exception.ConflictException;
+import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.exception.UnauthorizedException;
 import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
@@ -40,7 +40,7 @@ public class ProjectService {
         projectValidator.validate(project);
 
         if (dto.endDate().isBefore(project.getStartDate())) {
-            throw new ConflictException("A data de início do projeto deve ser anterior à data de término");
+            throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
         }
 
         Project savedProject = projectRepository.save(project);
@@ -83,11 +83,11 @@ public class ProjectService {
         projectValidator.validate(project);
 
         if (project.getStartDate().isBefore(LocalDate.now())) {
-            throw new ConflictException("Não é possível atualizar um projeto já iniciado");
+            throw new InvalidDateException("Não é possível atualizar um projeto já iniciado");
         }
 
         if (project.getEndDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
-            throw new ConflictException("A data de início do projeto deve ser anterior à data de término");
+            throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
         }
 
         projectMapper.updateEntity(project, dto);
