@@ -4,34 +4,33 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
 @AllArgsConstructor
-public class ErrorResponse {
+public class ProblemDetail {
 
     private LocalDateTime timestamp;
-    private String message;
-    private String path;
-    private HttpStatus error;
-    private int statusCode;
+    private String title;
+    private String detail;
+    private int status;
+    private String instance;
 
     private Map<String, Object> properties;
 
-    public ErrorResponse(LocalDateTime timestamp, String message, String path, HttpStatus error, int statusCode) {
-        this.timestamp = timestamp;
-        this.message = message;
-        this.path = path;
-        this.error = error;
-        this.statusCode = statusCode;
+    public ProblemDetail(String title, String detail, int status, String instance) {
+        this.timestamp = LocalDateTime.now();
+        this.title = title;
+        this.detail = detail;
+        this.status = status;
+        this.instance = instance;
+        this.properties = new HashMap<>();
     }
 
     public void setProperty(String key, Object value) {
-        this.properties = this.properties != null ? this.properties : new LinkedHashMap<>();
         this.properties.put(key, value);
     }
 
