@@ -35,6 +35,10 @@ public class Task {
 
     private LocalDate dueDate;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "assignee_id", nullable = false)
+    private User assignee;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
