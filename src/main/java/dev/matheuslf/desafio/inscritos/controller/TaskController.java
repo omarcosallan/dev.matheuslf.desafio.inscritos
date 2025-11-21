@@ -1,8 +1,11 @@
 package dev.matheuslf.desafio.inscritos.controller;
 
+import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.UpdateTaskDTO;
+import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
+import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,5 +37,23 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> update(@PathVariable("id") UUID id, @RequestBody @Valid UpdateTaskDTO dto) {
         return ResponseEntity.ok(taskService.update(id, dto));
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<TaskResponseDTO>> findAllWithParams(
+            @RequestParam(value = "title", required = false)
+            String title,
+            @RequestParam(value = "status", required = false)
+            Status status,
+            @RequestParam(value = "priority", required = false)
+            Priority priority,
+            @RequestParam(value = "projectId", required = false)
+            UUID projectId,
+            @RequestParam(value = "page", defaultValue = "0")
+            Integer page,
+            @RequestParam(value = "size", defaultValue = "10")
+            Integer size
+    ) {
+        return ResponseEntity.ok(taskService.findAllWithParams(title, status, priority, projectId, page, size));
     }
 }
