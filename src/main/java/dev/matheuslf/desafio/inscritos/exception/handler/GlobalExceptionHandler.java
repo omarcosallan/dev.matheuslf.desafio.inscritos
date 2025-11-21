@@ -1,9 +1,10 @@
-package dev.matheuslf.desafio.inscritos.exception;
+package dev.matheuslf.desafio.inscritos.exception.handler;
 
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import dev.matheuslf.desafio.inscritos.dto.error.ProblemDetail;
+import dev.matheuslf.desafio.inscritos.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
