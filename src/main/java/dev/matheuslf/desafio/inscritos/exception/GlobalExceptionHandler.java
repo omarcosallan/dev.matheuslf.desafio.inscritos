@@ -43,6 +43,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ProblemDetail> handleUnauthorizedException(UnauthorizedException e, HttpServletRequest req) {
+        ProblemDetail problem = new ProblemDetail(
+                "Não autorizado",
+                e.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                getRequestPath(req)
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest req) {
         ProblemDetail problem = new ProblemDetail(

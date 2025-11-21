@@ -4,10 +4,13 @@ import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
+import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,9 +38,9 @@ public class ProjectController {
 
     @GetMapping
     public ResponseEntity<PageResponse<ProjectResponseDTO>> findAll(@RequestParam(required = false, defaultValue = "0")
-                                                            Integer page,
+                                                                    Integer page,
                                                                     @RequestParam(required = false, defaultValue = "10")
-                                                            Integer size) {
+                                                                    Integer size) {
         return ResponseEntity.ok(projectService.findAll(page, size));
     }
 
@@ -47,7 +50,12 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectResponseDTO> update(@PathVariable(value = "id") UUID id, @RequestBody @Valid UpdateProjectDTO dto) {
-        return ResponseEntity.ok(projectService.update(id, dto));
+    public ResponseEntity<ProjectResponseDTO> update(@AuthenticationPrincipal
+                                                     UserDetails userDetails,
+                                                     @PathVariable(value = "id")
+                                                     UUID id,
+                                                     @RequestBody @Valid
+                                                     UpdateProjectDTO dto) {
+        return ResponseEntity.ok(projectService.update((User) userDetails, id, dto));
     }
 }

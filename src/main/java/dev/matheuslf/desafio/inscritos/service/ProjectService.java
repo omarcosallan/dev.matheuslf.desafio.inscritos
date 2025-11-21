@@ -6,8 +6,10 @@ import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
+import dev.matheuslf.desafio.inscritos.entities.enums.Role;
 import dev.matheuslf.desafio.inscritos.exception.ConflictException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
+import dev.matheuslf.desafio.inscritos.exception.UnauthorizedException;
 import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
@@ -68,8 +70,16 @@ public class ProjectService {
                 .toList();
     }
 
-    public ProjectResponseDTO update(UUID id, @Valid UpdateProjectDTO dto) {
+    public ProjectResponseDTO update(User user, UUID id, @Valid UpdateProjectDTO dto) {
         Project project = getById(id);
+
+        boolean isOwner = user.getEmail().equals(project.getOwner().getEmail());
+        boolean isAdmin = user.getRole().equals(Role.ADMIN);
+
+        if (!(isOwner || isAdmin)) {
+            throw new UnauthorizedException("Você não tem permissão para atualizar esse projeto");
+        }
+
         projectValidator.validate(project);
 
         if (project.getStartDate().isBefore(LocalDate.now())) {
