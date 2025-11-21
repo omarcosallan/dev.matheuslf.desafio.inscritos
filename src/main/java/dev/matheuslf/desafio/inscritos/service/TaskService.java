@@ -7,6 +7,7 @@ import dev.matheuslf.desafio.inscritos.dto.task.UpdateTaskDTO;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
+import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -82,6 +83,6 @@ public class TaskService {
 
     private Task getTaskById(UUID id) {
         return taskRepository.findById(id)
-                .orElseThrow( () -> new RuntimeException(TASK_NOT_FOUND_MESSAGE));
+                .orElseThrow( () -> new ResourceNotFoundException(TASK_NOT_FOUND_MESSAGE));
     }
 }
