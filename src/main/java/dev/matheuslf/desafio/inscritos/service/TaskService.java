@@ -10,7 +10,7 @@ import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
-import dev.matheuslf.desafio.inscritos.utils.TaskValidator;
+import dev.matheuslf.desafio.inscritos.validator.TaskValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

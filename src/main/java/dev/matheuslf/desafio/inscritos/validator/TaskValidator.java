@@ -1,4 +1,4 @@
-package dev.matheuslf.desafio.inscritos.utils;
+package dev.matheuslf.desafio.inscritos.validator;
 
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;

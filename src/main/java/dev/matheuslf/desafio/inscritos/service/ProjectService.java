@@ -9,7 +9,7 @@ import dev.matheuslf.desafio.inscritos.exception.ConflictException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
-import dev.matheuslf.desafio.inscritos.utils.ProjectValidator;
+import dev.matheuslf.desafio.inscritos.validator.ProjectValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

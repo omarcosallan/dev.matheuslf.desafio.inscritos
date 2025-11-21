@@ -1,6 +1,6 @@
 package dev.matheuslf.desafio.inscritos.controller.annotation;
 
-import dev.matheuslf.desafio.inscritos.utils.PriorityValidator;
+import dev.matheuslf.desafio.inscritos.validator.PriorityValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
