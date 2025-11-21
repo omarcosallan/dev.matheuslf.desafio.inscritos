@@ -1,5 +1,8 @@
 package dev.matheuslf.desafio.inscritos.exception;
 
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import dev.matheuslf.desafio.inscritos.dto.error.ProblemDetail;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -152,6 +155,22 @@ public class GlobalExceptionHandler {
                         getRequestPath(request));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler({
+            JWTCreationException.class,
+            JWTVerificationException.class,
+            JWTDecodeException.class,
+    })
+    public ResponseEntity<ProblemDetail> handleJWTDecodeException(JWTDecodeException e, HttpServletRequest request) {
+        ProblemDetail problem =
+                new ProblemDetail(
+                        "Erro no token",
+                        e.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        getRequestPath(request));
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
     }
 
     @ExceptionHandler(Exception.class)
