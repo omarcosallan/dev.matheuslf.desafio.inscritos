@@ -44,11 +44,12 @@ A modelagem pode ser modificada pelo inscrito. Porém, precisa ser justificado o
 
 
 #### Projetos
-| Método | Endpoint | Descrição                                              |
-|---------|-----------|--------------------------------------------------------|
-| **POST** | `/projects` | Criar novo projeto (`name` e `startDate` obrigatórios) |
-| **GET** | `/projects` | Listar todos os projetos (paginação)                   |
-| **PUT** | `/projects/{id}` | Atualizar projeto (apenas campos não nulos)            |
+| Método | Endpoint                    | Descrição                                              |
+|---------|-----------------------------|--------------------------------------------------------|
+| **POST** | `/projects`                 | Criar novo projeto (`name` e `startDate` obrigatórios) |
+| **GET** | `/projects`                 | Listar todos os projetos (paginação)                   |
+| **DELETE** | `/projects/owner/{ownerId}` | Lista todos os projetos por owner                      |
+| **PUT** | `/projects/{id}`            | Atualizar projeto (apenas campos não nulos)            |
 
 #### Tarefas
 | Método | Endpoint | Descrição |
