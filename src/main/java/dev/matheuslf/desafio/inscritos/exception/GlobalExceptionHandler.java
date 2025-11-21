@@ -29,6 +29,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
 
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ProblemDetail> handleConflictException(ConflictException e, HttpServletRequest req) {
+        ProblemDetail problem = new ProblemDetail(
+                "Erro de conflito",
+                e.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                getRequestPath(req)
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest req) {
         Map<String, String> errors = e.getBindingResult().getFieldErrors().stream().collect(

@@ -3,6 +3,7 @@ package dev.matheuslf.desafio.inscritos.controller;
 import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
 import dev.matheuslf.desafio.inscritos.service.ProjectService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/projects")
@@ -36,5 +38,10 @@ public class ProjectController {
                                                                     @RequestParam(required = false, defaultValue = "10")
                                                             Integer size) {
         return ResponseEntity.ok(projectService.findAll(page, size));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectResponseDTO> update(@PathVariable(value = "id") UUID id, @RequestBody @Valid UpdateProjectDTO dto) {
+        return ResponseEntity.ok(projectService.update(id, dto));
     }
 }
