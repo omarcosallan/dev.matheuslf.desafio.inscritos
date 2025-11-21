@@ -14,7 +14,7 @@ public class UserMapper {
         entity.setName(dto.name());
         entity.setEmail(dto.email());
         entity.setPassword(dto.password());
-        entity.setRole(Role.valueOf(dto.role()));
+        entity.setRole(Role.valueOf(dto.role().toUpperCase()));
         return entity;
     }
 
