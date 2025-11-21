@@ -26,7 +26,7 @@ public class TaskService {
 
     public TaskResponseDTO update(UUID id, UpdateTaskDTO dto) {
         Task entity = taskRepository.findById(id)
-                .orElseThrow( () -> new RuntimeException("Task not found"));
+                .orElseThrow( () -> new RuntimeException("Tarefa não encontrada"));
         taskMapper.updateEntity(entity, dto);
         Task savedTask = taskRepository.save(entity);
         return taskMapper.toDTO(savedTask);
