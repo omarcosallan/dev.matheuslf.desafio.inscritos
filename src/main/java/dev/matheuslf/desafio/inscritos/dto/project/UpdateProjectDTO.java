@@ -5,6 +5,7 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record UpdateProjectDTO(
         @Size(min = 3, max = 100)
@@ -14,6 +15,7 @@ public record UpdateProjectDTO(
         @FutureOrPresent
         LocalDate startDate,
         @Future
-        LocalDate endDate
+        LocalDate endDate,
+        UUID ownerId
 ) {
 }

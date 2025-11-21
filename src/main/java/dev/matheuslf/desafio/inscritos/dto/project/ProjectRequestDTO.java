@@ -3,6 +3,7 @@ package dev.matheuslf.desafio.inscritos.dto.project;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record ProjectRequestDTO(
         @NotBlank
@@ -14,6 +15,7 @@ public record ProjectRequestDTO(
         @FutureOrPresent
         LocalDate startDate,
         @Future
-        LocalDate endDate
+        LocalDate endDate,
+        UUID ownerId
 ) {
 }

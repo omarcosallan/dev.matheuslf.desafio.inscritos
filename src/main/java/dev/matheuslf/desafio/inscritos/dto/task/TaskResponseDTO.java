@@ -1,6 +1,7 @@
 package dev.matheuslf.desafio.inscritos.dto.task;
 
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
+import dev.matheuslf.desafio.inscritos.dto.user.UserResponseDTO;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 
@@ -13,6 +14,7 @@ public record TaskResponseDTO(
         String description,
         Status status,
         Priority priority,
+        UserResponseDTO assignee,
         LocalDate dueDate,
         ProjectResponseDTO project
 ) {
