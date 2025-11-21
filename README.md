@@ -15,34 +15,40 @@ A modelagem pode ser modificada pelo inscrito. Porém, precisa ser justificado o
 #### `Project`
 | Campo | Tipo | Descrição |
 |-------|------|-----------|
-| `id` | UUID/Long | Identificador |
+| `id` | UUID | Identificador |
 | `name` | String (3–100) | **Obrigatório** |
 | `description` | String | Opcional |
 | `startDate` | Date | Início do projeto |
 | `endDate` | Date | Opcional |
 
 #### `Task`
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | UUID/Long | Identificador |
-| `title` | String (5–150) | **Obrigatório** |
-| `description` | String | Detalhes da tarefa |
+| Campo | Tipo | Descrição           |
+|-------|------|---------------------|
+| `id` | UUID | Identificador       |
+| `title` | String (5–150) | **Obrigatório**     |
+| `description` | String | Detalhes da tarefa  |
 | `status` | Enum | TODO / DOING / DONE |
 | `priority` | Enum | LOW / MEDIUM / HIGH |
-| `dueDate` | Date | Data limite |
-| `projectId` | FK(Project) | Relacionamento |
+| `dueDate` | Date | Data limite         |
+| `projectId` | FK(Project) | Projeto associado   |
 
 ---
 
 ### 🌐 2. Endpoints REST
 
+#### Projetos
+| Método | Endpoint | Descrição                                              |
+|---------|-----------|--------------------------------------------------------|
+| **POST** | `/projects` | Criar novo projeto (`name` e `startDate` obrigatórios) |
+| **GET** | `/projects` | Listar todos os projetos (paginação)                   |
+| **PUT** | `/projects/{id}` | Atualizar projeto (apenas campos não nulos)            |
+
+#### Tarefas
 | Método | Endpoint | Descrição |
 |---------|-----------|-----------|
-| **POST** | `/projects` | Criar novo projeto (`name` obrigatório) |
-| **GET** | `/projects` | Listar todos os projetos (paginação opcional) |
 | **POST** | `/tasks` | Criar nova tarefa vinculada a um projeto |
-| **GET** | `/tasks?status=&priority=&projectId=` | Buscar tarefas com filtros opcionais |
-| **PUT** | `/tasks/{id}/status` | Atualizar apenas o status da tarefa |
+| **GET** | `/tasks` | Buscar tarefas com filtros opcionais |
+| **PUT** | `/tasks/{id}` | Atualizar tarefa (apenas campos não nulos) |
 | **DELETE** | `/tasks/{id}` | Remover tarefa |
 
 ---
