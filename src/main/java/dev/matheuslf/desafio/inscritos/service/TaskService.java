@@ -75,6 +75,11 @@ public class TaskService {
         );
     }
 
+    public void delete(UUID id) {
+        Task task = getTaskById(id);
+        taskRepository.delete(task);
+    }
+
     private Task getTaskById(UUID id) {
         return taskRepository.findById(id)
                 .orElseThrow( () -> new RuntimeException(TASK_NOT_FOUND_MESSAGE));

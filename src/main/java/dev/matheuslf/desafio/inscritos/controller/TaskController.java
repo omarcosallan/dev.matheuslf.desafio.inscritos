@@ -56,4 +56,10 @@ public class TaskController {
     ) {
         return ResponseEntity.ok(taskService.findAllWithParams(title, status, priority, projectId, page, size));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
+        taskService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
