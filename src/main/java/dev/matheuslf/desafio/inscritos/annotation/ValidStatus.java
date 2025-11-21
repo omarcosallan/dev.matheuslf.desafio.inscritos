@@ -1,4 +1,4 @@
-package dev.matheuslf.desafio.inscritos.controller.annotation;
+package dev.matheuslf.desafio.inscritos.annotation;
 
 import dev.matheuslf.desafio.inscritos.validator.StatusValidator;
 import jakarta.validation.Constraint;

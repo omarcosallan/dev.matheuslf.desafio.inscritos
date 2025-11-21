@@ -1,6 +1,6 @@
 package dev.matheuslf.desafio.inscritos.validator;
 
-import dev.matheuslf.desafio.inscritos.controller.annotation.ValidStatus;
+import dev.matheuslf.desafio.inscritos.annotation.ValidStatus;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
