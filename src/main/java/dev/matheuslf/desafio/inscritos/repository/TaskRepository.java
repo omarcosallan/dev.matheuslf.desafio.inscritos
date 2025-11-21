@@ -1,10 +1,13 @@
 package dev.matheuslf.desafio.inscritos.repository;
 
+import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface TaskRepository extends JpaRepository<Task, UUID>, JpaSpecificationExecutor<Task> {
+    Optional<Task> findByTitleAndProject(String title, Project project);
 }

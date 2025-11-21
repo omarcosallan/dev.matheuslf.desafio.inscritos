@@ -10,6 +10,7 @@ import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
+import dev.matheuslf.desafio.inscritos.utils.TaskValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,18 +28,29 @@ public class TaskService {
 
     private static final String TASK_NOT_FOUND_MESSAGE = "Tarefa não encontrada";
     private final TaskRepository taskRepository;
+    private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
 
     public TaskResponseDTO save(TaskRequestDTO dto) {
-        Task entity = taskMapper.toEntity(dto);
-        Task savedTask = taskRepository.save(entity);
+        Task task = taskMapper.toEntity(dto);
+
+        taskValidator.validateTaskName(task);
+        taskValidator.validateProjectEndDate(task.getProject());
+        taskValidator.validateTaskDueDate(task.getDueDate(), task.getProject());
+
+        Task savedTask = taskRepository.save(task);
         return taskMapper.toDTO(savedTask);
     }
 
     public TaskResponseDTO update(UUID id, UpdateTaskDTO dto) {
-        Task entity = getTaskById(id);
-        taskMapper.updateEntity(entity, dto);
-        Task savedTask = taskRepository.save(entity);
+        Task task = getTaskById(id);
+
+        taskValidator.validateTaskName(task);
+        taskValidator.validateProjectEndDate(task.getProject());
+        taskValidator.validateTaskDueDate(task.getDueDate(), task.getProject());
+
+        taskMapper.updateEntity(task, dto);
+        Task savedTask = taskRepository.save(task);
         return taskMapper.toDTO(savedTask);
     }
 

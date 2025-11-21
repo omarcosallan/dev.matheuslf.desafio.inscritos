@@ -41,6 +41,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
     }
 
+    @ExceptionHandler(InvalidDueDateException.class)
+    public ResponseEntity<ProblemDetail> handleInvalidDueDateException(InvalidDueDateException e, HttpServletRequest req) {
+        ProblemDetail problem = new ProblemDetail(
+                "Data inválida",
+                e.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                getRequestPath(req)
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    @ExceptionHandler(ProjectEndedException.class)
+    public ResponseEntity<ProblemDetail> handleProjectEndedException(ProjectEndedException e, HttpServletRequest req) {
+        ProblemDetail problem = new ProblemDetail(
+                "Projeto finalizado",
+                e.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                getRequestPath(req)
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ProblemDetail> handleMethodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest req) {
         Map<String, String> errors = e.getBindingResult().getFieldErrors().stream().collect(
