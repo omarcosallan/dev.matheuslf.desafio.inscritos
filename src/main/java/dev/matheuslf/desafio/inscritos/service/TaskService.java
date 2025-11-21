@@ -24,6 +24,7 @@ import static dev.matheuslf.desafio.inscritos.repository.specs.TaskSpec.*;
 @RequiredArgsConstructor
 public class TaskService {
 
+    private static final String TASK_NOT_FOUND_MESSAGE = "Tarefa não encontrada";
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
@@ -34,8 +35,7 @@ public class TaskService {
     }
 
     public TaskResponseDTO update(UUID id, UpdateTaskDTO dto) {
-        Task entity = taskRepository.findById(id)
-                .orElseThrow( () -> new RuntimeException("Tarefa não encontrada"));
+        Task entity = getTaskById(id);
         taskMapper.updateEntity(entity, dto);
         Task savedTask = taskRepository.save(entity);
         return taskMapper.toDTO(savedTask);
@@ -73,5 +73,10 @@ public class TaskService {
                 tasks.hasNext(),
                 tasks.hasPrevious()
         );
+    }
+
+    private Task getTaskById(UUID id) {
+        return taskRepository.findById(id)
+                .orElseThrow( () -> new RuntimeException(TASK_NOT_FOUND_MESSAGE));
     }
 }
