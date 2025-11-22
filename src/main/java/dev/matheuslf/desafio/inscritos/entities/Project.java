@@ -1,14 +1,12 @@
 package dev.matheuslf.desafio.inscritos.entities;
 
+import dev.matheuslf.desafio.inscritos.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Project {
+public class Project extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -45,12 +43,6 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> assignees = new ArrayList<>();
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     public Project(String name, String description, LocalDate startDate, LocalDate endDate) {
         this.name = name;

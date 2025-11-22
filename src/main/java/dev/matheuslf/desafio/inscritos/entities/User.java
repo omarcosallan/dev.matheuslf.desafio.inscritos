@@ -1,16 +1,14 @@
 package dev.matheuslf.desafio.inscritos.entities;
 
+import dev.matheuslf.desafio.inscritos.audit.Auditable;
 import dev.matheuslf.desafio.inscritos.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
@@ -19,7 +17,7 @@ import java.util.UUID;
 @Table(name = "users")
 @Getter
 @Setter
-public class User implements UserDetails {
+public class User extends Auditable implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,12 +37,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private boolean enabled = true;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

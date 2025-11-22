@@ -53,7 +53,7 @@ CREATE TABLE tasks
 
 CREATE TABLE user_projects
 (
-    project_id UUID NOT NULL ,
+    project_id UUID NOT NULL,
     user_id    UUID NOT NULL,
     created_at TIMESTAMP WITHOUT TIME ZONE,
     updated_at TIMESTAMP WITHOUT TIME ZONE,
