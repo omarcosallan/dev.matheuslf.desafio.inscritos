@@ -45,6 +45,11 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findByProject(projectId));
     }
 
+    @GetMapping("/assignee/{assigneeId}")
+    public ResponseEntity<List<TaskResponseDTO>> findByAssignee(@PathVariable("assigneeId") UUID assigneeId) {
+        return ResponseEntity.ok(taskService.findByAssignee(assigneeId));
+    }
+
     @GetMapping
     public ResponseEntity<PageResponse<TaskResponseDTO>> findAllWithParams(
             @RequestParam(value = "title", required = false)
