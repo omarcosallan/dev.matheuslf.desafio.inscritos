@@ -25,11 +25,11 @@ public class TaskValidator {
     }
 
     public void validateTaskDueDate(LocalDate taskDueDate, Project project) {
-        if (taskDueDate.isAfter(project.getEndDate())) {
+        if (taskDueDate != null && taskDueDate.isAfter(project.getEndDate())) {
             throw new InvalidDateException("A data de entrega da tarefa não pode ser posterior à data de término do projeto");
         }
 
-        if (taskDueDate.isBefore(project.getStartDate())) {
+        if (taskDueDate != null && taskDueDate.isBefore(project.getStartDate())) {
             throw new InvalidDateException("A data de entrega da tarefa não pode ser anterior à data de início do projeto");
         }
     }

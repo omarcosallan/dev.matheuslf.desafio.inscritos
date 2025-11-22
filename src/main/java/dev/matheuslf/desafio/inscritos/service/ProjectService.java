@@ -76,7 +76,6 @@ public class ProjectService {
         }
 
         projectValidator.validateProjectName(project);
-        projectValidator.validateUpdateDateProject(project, dto);
 
         projectMapper.updateEntity(project, dto);
         Project updatedProject = projectRepository.save(project);

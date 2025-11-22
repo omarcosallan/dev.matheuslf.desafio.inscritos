@@ -51,14 +51,14 @@ public class ProjectMapper {
         }
 
         if (dto.startDate() != null) {
-            if (dto.endDate().isBefore(dto.startDate())) {
+            if (dto.endDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
                 throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
             }
             project.setStartDate(dto.startDate());
         }
 
         if (dto.endDate() != null) {
-            if (dto.endDate().isBefore(dto.startDate())) {
+            if (dto.endDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
                 throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
             }
             project.setEndDate(dto.endDate());
