@@ -98,6 +98,11 @@ public class TaskService {
 
     public void delete(UUID id) {
         Task task = getTaskById(id);
+
+        taskValidator.validateProjectEndDate(task.getProject());
+        taskValidator.validateDeleteTaskDueDate(task);
+        taskValidator.validateDeleteTaskStatus(task);
+
         taskRepository.delete(task);
     }
 
