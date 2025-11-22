@@ -3,7 +3,7 @@ package dev.matheuslf.desafio.inscritos.controller;
 import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
-import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.service.ProjectService;
 import jakarta.validation.Valid;
@@ -60,7 +60,7 @@ public class ProjectController {
                                                      @PathVariable(value = "id")
                                                      UUID id,
                                                      @RequestBody @Valid
-                                                     UpdateProjectDTO dto) {
+                                                     ProjectUpdateDTO dto) {
         return ResponseEntity.ok(projectService.update((User) userDetails, id, dto));
     }
 }

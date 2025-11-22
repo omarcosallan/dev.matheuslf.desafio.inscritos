@@ -3,7 +3,7 @@ package dev.matheuslf.desafio.inscritos.service;
 import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
-import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Role;
@@ -67,7 +67,7 @@ public class ProjectService {
                 .toList();
     }
 
-    public ProjectResponseDTO update(User user, UUID id, UpdateProjectDTO dto) {
+    public ProjectResponseDTO update(User user, UUID id, ProjectUpdateDTO dto) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 

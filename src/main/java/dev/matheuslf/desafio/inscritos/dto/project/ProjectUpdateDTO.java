@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record UpdateProjectDTO(
+public record ProjectUpdateDTO(
         @Size(min = 3, max = 100)
         String name,
         @Size(max = 255)

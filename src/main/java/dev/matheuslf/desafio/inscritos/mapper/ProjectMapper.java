@@ -2,7 +2,7 @@ package dev.matheuslf.desafio.inscritos.mapper;
 
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
-import dev.matheuslf.desafio.inscritos.dto.project.UpdateProjectDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
@@ -46,7 +46,7 @@ public class ProjectMapper {
         return project;
     }
 
-    public void updateEntity(Project project, UpdateProjectDTO dto) {
+    public void updateEntity(Project project, ProjectUpdateDTO dto) {
         if (dto.name() != null) {
             project.setName(dto.name());
         }
