@@ -59,10 +59,10 @@ public class ProjectService {
         );
     }
 
-    public List<ProjectResponseDTO> findByOwner(UUID ownerId) {
-        User owner = userRepository.findById(ownerId)
+    public List<ProjectResponseDTO> findByOwnerOrAssignee(UUID userId) {
+        User owner = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner não encontrado"));
-        return projectRepository.findByOwner(owner).stream()
+        return projectRepository.findByOwnerOrAssignee(owner).stream()
                 .map(projectMapper::toDTO)
                 .toList();
     }

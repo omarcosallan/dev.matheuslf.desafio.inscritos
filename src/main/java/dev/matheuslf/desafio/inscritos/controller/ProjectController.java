@@ -44,9 +44,9 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.findAll(page, size));
     }
 
-    @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<ProjectResponseDTO>> findByOwner(@PathVariable(value = "ownerId") UUID ownerId) {
-        return ResponseEntity.ok(projectService.findByOwner(ownerId));
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ProjectResponseDTO>> findByOwnerOrAssignee(@PathVariable(value = "userId") UUID userId) {
+        return ResponseEntity.ok(projectService.findByOwnerOrAssignee(userId));
     }
 
     @GetMapping("{id}")
