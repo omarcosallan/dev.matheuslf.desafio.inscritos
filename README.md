@@ -53,14 +53,15 @@ A modelagem pode ser modificada pelo inscrito. Porém, precisa ser justificado o
 | **PUT** | `/projects/{id}`            | Atualizar projeto (apenas campos não nulos)            |
 
 #### Tarefas
-| Método | Endpoint                    | Descrição                                     |
-|---------|-----------------------------|-----------------------------------------------|
-| **POST** | `/tasks`                    | Criar nova tarefa vinculada a um projeto      |
-| **GET** | `/tasks`                    | Listar todas as tarefas com filtros opcionais |
-| **GET** | `/tasks/{id}`               | Listar tarefa por id                           |
-| **GET** | `/tasks/project/{projectId}` | Listar todas as tarefas por projeto           |
-| **PUT** | `/tasks/{id}`               | Atualizar tarefa (apenas campos não nulos)    |
-| **DELETE** | `/tasks/{id}`               | Remover tarefa                                |
+| Método | Endpoint                      | Descrição                                     |
+|---------|-------------------------------|-----------------------------------------------|
+| **POST** | `/tasks`                      | Criar nova tarefa vinculada a um projeto      |
+| **GET** | `/tasks`                      | Listar todas as tarefas com filtros opcionais |
+| **GET** | `/tasks/{id}`                 | Listar tarefa por id                          |
+| **GET** | `/tasks/project/{projectId}`  | Listar todas as tarefas por projeto           |
+| **GET** | `/tasks/assignee/{assigneeId}` | Listar todas as tarefas por responsável       |
+| **PUT** | `/tasks/{id}`                 | Atualizar tarefa (apenas campos não nulos)    |
+| **DELETE** | `/tasks/{id}`                 | Remover tarefa                                |
 
 ---
 
