@@ -176,15 +176,15 @@ public class GlobalExceptionHandler {
             JWTVerificationException.class,
             JWTDecodeException.class,
     })
-    public ResponseEntity<ProblemDetail> handleJWTDecodeException(JWTDecodeException e, HttpServletRequest request) {
+    public ResponseEntity<ProblemDetail> handleJWTException(Exception e, HttpServletRequest request) {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Erro no token",
+                        "Token inválido",
                         e.getMessage(),
-                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        HttpStatus.FORBIDDEN.value(),
                         getRequestPath(request));
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problem);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(problem);
     }
 
     @ExceptionHandler(Exception.class)
