@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,6 +38,11 @@ public class TaskController {
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> update(@PathVariable("id") UUID id, @RequestBody @Valid UpdateTaskDTO dto) {
         return ResponseEntity.ok(taskService.update(id, dto));
+    }
+
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<List<TaskResponseDTO>> findByProject(@PathVariable(value = "projectId") UUID projectId) {
+        return ResponseEntity.ok(taskService.findByProject(projectId));
     }
 
     @GetMapping

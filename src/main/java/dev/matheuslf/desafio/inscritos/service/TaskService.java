@@ -4,11 +4,13 @@ import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.UpdateTaskDTO;
+import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
+import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
 import dev.matheuslf.desafio.inscritos.validator.TaskValidator;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 import static dev.matheuslf.desafio.inscritos.repository.specs.TaskSpec.*;
@@ -30,6 +33,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
+    private final ProjectRepository projectRepository;
 
     public TaskResponseDTO save(TaskRequestDTO dto) {
         Task task = taskMapper.toEntity(dto);
@@ -91,6 +95,14 @@ public class TaskService {
     public void delete(UUID id) {
         Task task = getTaskById(id);
         taskRepository.delete(task);
+    }
+
+    public List<TaskResponseDTO> findByProject(UUID projectId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow( () -> new ResourceNotFoundException("Projeto não encontrado"));
+        return taskRepository.findAllByProject(project).stream()
+                .map(taskMapper::toDTO)
+                .toList();
     }
 
     private Task getTaskById(UUID id) {
