@@ -64,8 +64,8 @@ public class ProjectMapper {
             project.setEndDate(dto.endDate());
         }
 
-        if (dto.ownerId() != null) {
-            User owner = userRepository.findById(dto.ownerId())
+        if (dto.ownerEmail() != null) {
+            User owner = userRepository.findByEmail(dto.ownerEmail())
                     .orElseThrow( () -> new ResourceNotFoundException("Owner não encontrado"));
             project.setOwner(owner);
         }

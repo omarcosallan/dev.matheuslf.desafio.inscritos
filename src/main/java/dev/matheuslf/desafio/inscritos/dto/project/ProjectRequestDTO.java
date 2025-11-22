@@ -15,6 +15,9 @@ public record ProjectRequestDTO(
         LocalDate startDate,
         @Future
         LocalDate endDate,
+        @NotBlank
+        @Email
+        @Size(max = 150)
         String ownerEmail
 ) {
 }

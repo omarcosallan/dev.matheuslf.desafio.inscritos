@@ -24,9 +24,9 @@ public class TaskMapper {
     private final UserMapper userMapper;
 
     public Task toEntity(TaskRequestDTO dto) {
-        Project project = projectRepository.findById(dto.projectId())
+        Project project = projectRepository.findByName(dto.projectName())
                 .orElseThrow(() -> new ResourceNotFoundException("Projeto não encontrado"));
-        User assignee = userRepository.findById(dto.assigneeId())
+        User assignee = userRepository.findByEmail(dto.assigneeEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado"));
         Task task = new Task();
         task.setTitle(dto.title());
@@ -77,8 +77,8 @@ public class TaskMapper {
             task.setDueDate(dto.dueDate());
         }
 
-        if (dto.assigneeId() != null) {
-            User assignee = userRepository.findById(dto.assigneeId())
+        if (dto.assigneeEmail() != null) {
+            User assignee = userRepository.findByEmail(dto.assigneeEmail())
                     .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado"));
             task.setAssignee(assignee);
         }
