@@ -7,11 +7,11 @@ import dev.matheuslf.desafio.inscritos.dto.task.TaskStatusUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.service.TaskService;
+import dev.matheuslf.desafio.inscritos.utils.GenerateURI;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -27,21 +27,18 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<TaskResponseDTO> save(@Valid @RequestBody TaskRequestDTO dto) {
         TaskResponseDTO task = taskService.save(dto);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(task.id())
-                .toUri();
+        URI uri = GenerateURI.generate(task.id());
         return ResponseEntity.created(uri).body(task);
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<TaskResponseDTO> updateStatus(@PathVariable("id") UUID id, @RequestBody @Valid TaskStatusUpdateDTO dto) {
+    public ResponseEntity<TaskResponseDTO> updateStatus(@PathVariable("id") UUID id,
+                                                        @Valid @RequestBody TaskStatusUpdateDTO dto) {
         return ResponseEntity.ok(taskService.updateStatus(id, dto));
     }
 
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<List<TaskResponseDTO>> findByProject(@PathVariable(value = "projectId") UUID projectId) {
+    public ResponseEntity<List<TaskResponseDTO>> findByProject(@PathVariable(value = "projectId")UUID projectId) {
         return ResponseEntity.ok(taskService.findByProject(projectId));
     }
 

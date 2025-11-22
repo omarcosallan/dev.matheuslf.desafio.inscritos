@@ -6,13 +6,13 @@ import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.service.ProjectService;
+import dev.matheuslf.desafio.inscritos.utils.GenerateURI;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -28,11 +28,7 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ProjectResponseDTO> save(@Valid @RequestBody ProjectRequestDTO dto) {
         ProjectResponseDTO project = projectService.save(dto);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(project.id())
-                .toUri();
+        URI uri = GenerateURI.generate(project.id());
         return ResponseEntity.created(uri).body(project);
     }
 
@@ -59,7 +55,7 @@ public class ProjectController {
                                                      UserDetails userDetails,
                                                      @PathVariable(value = "id")
                                                      UUID id,
-                                                     @RequestBody @Valid
+                                                     @Valid @RequestBody
                                                      ProjectUpdateDTO dto) {
         return ResponseEntity.ok(projectService.update((User) userDetails, id, dto));
     }

@@ -3,6 +3,7 @@ package dev.matheuslf.desafio.inscritos.controller;
 import dev.matheuslf.desafio.inscritos.dto.login.LoginRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.login.LoginResponseDTO;
 import dev.matheuslf.desafio.inscritos.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
 }
