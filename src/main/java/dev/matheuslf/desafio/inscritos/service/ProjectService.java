@@ -14,14 +14,12 @@ import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
 import dev.matheuslf.desafio.inscritos.validator.ProjectValidator;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +35,7 @@ public class ProjectService {
 
     public ProjectResponseDTO save(ProjectRequestDTO dto) {
         Project project = projectMapper.toEntity(dto);
-        projectValidator.validate(project);
+        projectValidator.validateProjectName(project);
 
         if (dto.endDate().isBefore(project.getStartDate())) {
             throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
@@ -50,7 +48,7 @@ public class ProjectService {
     public PageResponse<ProjectResponseDTO> findAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Project> projects = projectRepository.findAll(pageable);
-        PageResponse<ProjectResponseDTO> response = new PageResponse<>(
+        return new PageResponse<>(
                 projects.getContent().stream().map(projectMapper::toDTO).toList(),
                 projects.getNumber(),
                 projects.getTotalPages(),
@@ -59,7 +57,6 @@ public class ProjectService {
                 projects.hasNext(),
                 projects.hasPrevious()
         );
-        return response;
     }
 
     public List<ProjectResponseDTO> findByOwner(UUID ownerId) {
@@ -70,33 +67,23 @@ public class ProjectService {
                 .toList();
     }
 
-    public ProjectResponseDTO update(User user, UUID id, @Valid UpdateProjectDTO dto) {
-        Project project = getById(id);
+    public ProjectResponseDTO update(User user, UUID id, UpdateProjectDTO dto) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
 
-        boolean isOwner = user.getEmail().equals(project.getOwner().getEmail());
-        boolean isAdmin = user.getRole().equals(Role.ADMIN);
-
-        if (!(isOwner || isAdmin)) {
+        if (!isOwnerOrAdmin(user, project)) {
             throw new UnauthorizedException("Você não tem permissão para atualizar esse projeto");
         }
 
-        projectValidator.validate(project);
-
-        if (project.getStartDate().isBefore(LocalDate.now())) {
-            throw new InvalidDateException("Não é possível atualizar um projeto já iniciado");
-        }
-
-        if (project.getEndDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
-            throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
-        }
+        projectValidator.validateProjectName(project);
+        projectValidator.validateUpdateDateProject(project, dto);
 
         projectMapper.updateEntity(project, dto);
         Project updatedProject = projectRepository.save(project);
         return projectMapper.toDTO(updatedProject);
     }
 
-    private Project getById(UUID id) {
-        return projectRepository.findById(id)
-                .orElseThrow( () -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
+    private boolean isOwnerOrAdmin(User user, Project project) {
+        return user.getEmail().equals(project.getOwner().getEmail()) || user.getRole().equals(Role.ADMIN);
     }
 }
