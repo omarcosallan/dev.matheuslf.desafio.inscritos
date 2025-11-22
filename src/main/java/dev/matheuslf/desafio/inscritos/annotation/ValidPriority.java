@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPriority {
-    String message() default "Prioridade inválida";
+    String message() default "Invalid priority";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -24,8 +24,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Não permitido",
-                        "Você não tem permissão para acessar este recurso",
+                        "Forbidden",
+                        "You don't have permission to access this resource",
                         HttpStatus.FORBIDDEN.value(),
                         request.getRequestURI());
 

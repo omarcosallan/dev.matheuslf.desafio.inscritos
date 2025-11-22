@@ -36,7 +36,7 @@ public class ProjectMapper {
 
     public Project toEntity(ProjectRequestDTO dto) {
         User owner = userRepository.findByEmail(dto.ownerEmail())
-                .orElseThrow( () -> new ResourceNotFoundException("Owner não encontrado"));
+                .orElseThrow( () -> new ResourceNotFoundException("Owner not found with email: " + dto.ownerEmail()));
         Project project = new Project();
         project.setName(dto.name());
         project.setDescription(dto.description());
@@ -57,21 +57,21 @@ public class ProjectMapper {
 
         if (dto.startDate() != null) {
             if (dto.endDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
-                throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
+                throw new InvalidDateException("Project's start date must be before the end date");
             }
             project.setStartDate(dto.startDate());
         }
 
         if (dto.endDate() != null) {
             if (dto.endDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
-                throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
+                throw new InvalidDateException("Project's start date must be before the end date");
             }
             project.setEndDate(dto.endDate());
         }
 
         if (dto.ownerEmail() != null) {
             User owner = userRepository.findByEmail(dto.ownerEmail())
-                    .orElseThrow( () -> new ResourceNotFoundException("Owner não encontrado"));
+                    .orElseThrow( () -> new ResourceNotFoundException("Owner not found with email: " + dto.ownerEmail()));
             project.setOwner(owner);
         }
     }

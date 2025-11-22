@@ -1,8 +1,8 @@
 package dev.matheuslf.desafio.inscritos.validator;
 
 import dev.matheuslf.desafio.inscritos.entities.Project;
+import dev.matheuslf.desafio.inscritos.exception.BusinessException;
 import dev.matheuslf.desafio.inscritos.exception.ConflictException;
-import dev.matheuslf.desafio.inscritos.exception.ProjectEndedException;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,13 +18,13 @@ public class ProjectValidator {
 
     public void validateProjectEndDate(Project project) {
         if (project.getEndDate().isBefore(LocalDate.now())) {
-            throw new ProjectEndedException("O projeto está finalizado");
+            throw new BusinessException("Project has already ended");
         }
     }
 
     public void validateProjectName(Project project) {
         if (existsRegisteredProject(project)) {
-            throw new ConflictException("Já existe um projeto com esse nome");
+            throw new ConflictException("There is already a project with this name");
         }
     }
 

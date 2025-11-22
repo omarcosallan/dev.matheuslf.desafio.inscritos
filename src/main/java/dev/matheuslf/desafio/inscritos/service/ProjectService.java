@@ -7,9 +7,9 @@ import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Role;
+import dev.matheuslf.desafio.inscritos.exception.BusinessException;
 import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
-import dev.matheuslf.desafio.inscritos.exception.UnauthorizedException;
 import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProjectService {
 
-    private static final String PROJECT_NOT_FOUND_MESSAGE = "Projeto não encontrado";
+    private static final String PROJECT_NOT_FOUND_MESSAGE = "Project not found with id: ";
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
     private final ProjectValidator projectValidator;
@@ -38,7 +38,7 @@ public class ProjectService {
         projectValidator.validateProjectName(project);
 
         if (dto.endDate().isBefore(project.getStartDate())) {
-            throw new InvalidDateException("A data de início do projeto deve ser anterior à data de término");
+            throw new InvalidDateException("Project's start date must be before the end date");
         }
 
         Project savedProject = projectRepository.save(project);
@@ -61,7 +61,7 @@ public class ProjectService {
 
     public List<ProjectResponseDTO> findByOwnerOrAssignee(UUID userId) {
         User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Owner não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + userId));
         return projectRepository.findByOwnerOrAssignee(owner).stream()
                 .map(projectMapper::toDTO)
                 .toList();
@@ -69,10 +69,10 @@ public class ProjectService {
 
     public ProjectResponseDTO update(User user, UUID id, ProjectUpdateDTO dto) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE + id));
 
         if (!isOwnerOrAdmin(user, project)) {
-            throw new UnauthorizedException("Você não tem permissão para atualizar esse projeto");
+            throw new BusinessException("You are not allowed to update this project");
         }
 
         projectValidator.validateProjectName(project);
@@ -84,7 +84,7 @@ public class ProjectService {
 
     public ProjectResponseDTO findById(UUID id) {
         Project project = projectRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE + id));
         return projectMapper.toDTO(project);
     }
 

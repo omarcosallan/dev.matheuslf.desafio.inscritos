@@ -25,49 +25,28 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ProblemDetail> handleAuthenticationException(AuthenticationException ex, HttpServletRequest request) {
+    public ResponseEntity<ProblemDetail> handleAuthenticationException(AuthenticationException e, HttpServletRequest request) {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Erro de autenticação",
-                        ex.getMessage(),
+                        "Authentication error",
+                        e.getMessage(),
                         HttpStatus.UNAUTHORIZED.value(),
                         getRequestPath(request));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
+    @ExceptionHandler({
+            BadCredentialsException.class,
+            InternalAuthenticationServiceException.class
+    })
     public ResponseEntity<ProblemDetail> handleBadCredentialsException(HttpServletRequest request) {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Erro de autenticação",
-                        "E-mail ou senha inválidos",
+                        "Authentication failed",
+                        "Invalid email or password",
                         HttpStatus.UNAUTHORIZED.value(),
                         getRequestPath(request));
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
-    }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ProblemDetail> handleUnauthorizedException(UnauthorizedException e, HttpServletRequest req) {
-        ProblemDetail problem = new ProblemDetail(
-                "Não autorizado",
-                e.getMessage(),
-                HttpStatus.UNAUTHORIZED.value(),
-                getRequestPath(req)
-        );
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
-    }
-
-    @ExceptionHandler(InternalAuthenticationServiceException.class)
-    public ResponseEntity<ProblemDetail> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException e, HttpServletRequest req) {
-        ProblemDetail problem = new ProblemDetail(
-                "Erro de autenticação",
-                "E-mail ou senha inválidos",
-                HttpStatus.UNAUTHORIZED.value(),
-                getRequestPath(req)
-        );
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
     }
@@ -75,7 +54,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleResourceNotFoundException(ResourceNotFoundException e, HttpServletRequest req) {
         ProblemDetail problem = new ProblemDetail(
-                "Recurso não encontrado",
+                "Resource not found",
                 e.getMessage(),
                 HttpStatus.NOT_FOUND.value(),
                 getRequestPath(req)
@@ -87,7 +66,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ProblemDetail> handleConflictException(ConflictException e, HttpServletRequest req) {
         ProblemDetail problem = new ProblemDetail(
-                "Erro de conflito",
+                "Conflict error",
                 e.getMessage(),
                 HttpStatus.CONFLICT.value(),
                 getRequestPath(req)
@@ -99,7 +78,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidDateException.class)
     public ResponseEntity<ProblemDetail> handleInvalidDueDateException(InvalidDateException e, HttpServletRequest req) {
         ProblemDetail problem = new ProblemDetail(
-                "Data inválida",
+                "Invalid date",
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
                 getRequestPath(req)
@@ -108,10 +87,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
-    @ExceptionHandler(ProjectEndedException.class)
-    public ResponseEntity<ProblemDetail> handleProjectEndedException(ProjectEndedException e, HttpServletRequest req) {
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<ProblemDetail> handleBusinessException(BusinessException e, HttpServletRequest req) {
         ProblemDetail problem = new ProblemDetail(
-                "Projeto finalizado",
+                "Business rule violation",
                 e.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
                 getRequestPath(req)
@@ -130,8 +109,8 @@ public class GlobalExceptionHandler {
         );
 
         ProblemDetail problem = new ProblemDetail(
-                "Dados inválidos",
-                "Um ou mais campos são inválidos",
+                "Validation error",
+                "One or more fields are invalid",
                 HttpStatus.BAD_REQUEST.value(),
                 getRequestPath(req));
 
@@ -144,14 +123,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
         String detail =
                 String.format(
-                        "O parâmetro '%s' possui o valor inválido '%s'. Tipo esperado: %s",
+                        "Parameter '%s' has invalid value '%s'. Expected type: %s",
                         e.getName(),
                         e.getValue(),
-                        e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "desconhecido");
+                        e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : "unknown");
 
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Parâmetro inválido",
+                        "Invalid parameter",
                         detail,
                         HttpStatus.BAD_REQUEST.value(),
                         getRequestPath(request));
@@ -163,8 +142,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleHttpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Solicitação JSON malformada",
-                        "O corpo da solicitação é inválido ou está malformado",
+                        "Malformed JSON request",
+                        "Request body is invalid or malformed: " + e.getCause().getMessage(),
                         HttpStatus.BAD_REQUEST.value(),
                         getRequestPath(request));
 
@@ -179,7 +158,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleJWTException(Exception e, HttpServletRequest request) {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Token inválido",
+                        "Invalid token",
                         e.getMessage(),
                         HttpStatus.FORBIDDEN.value(),
                         getRequestPath(request));
@@ -191,8 +170,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ProblemDetail> handleGenericException(HttpServletRequest request) {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Erro interno do servidor",
-                        "Ocorreu um erro inesperado",
+                        "Internal server error",
+                        "An unexpected error occurred",
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
                         getRequestPath(request));
 

@@ -32,7 +32,7 @@ import static dev.matheuslf.desafio.inscritos.repository.specs.TaskSpec.*;
 @RequiredArgsConstructor
 public class TaskService {
 
-    private static final String TASK_NOT_FOUND_MESSAGE = "Tarefa não encontrada";
+    private static final String TASK_NOT_FOUND_MESSAGE = "Task not found with id: ";
     private final TaskRepository taskRepository;
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
@@ -108,7 +108,7 @@ public class TaskService {
 
     public List<TaskResponseDTO> findByProject(UUID projectId) {
         Project project = projectRepository.findById(projectId)
-                .orElseThrow( () -> new ResourceNotFoundException("Projeto não encontrado"));
+                .orElseThrow( () -> new ResourceNotFoundException("Project not found with id: " + projectId));
         return taskRepository.findAllByProject(project).stream()
                 .map(taskMapper::toDTO)
                 .toList();
@@ -121,7 +121,7 @@ public class TaskService {
 
     public List<TaskResponseDTO> findByAssignee(UUID assigneeId) {
         User assignee = userRepository.findById(assigneeId)
-                .orElseThrow( () -> new ResourceNotFoundException("Responsável não encontrado"));
+                .orElseThrow( () -> new ResourceNotFoundException("Assignee not found with id: " + assigneeId));
         return taskRepository.findAllByAssignee(assignee).stream()
                 .map(taskMapper::toDTO)
                 .toList();
@@ -129,6 +129,6 @@ public class TaskService {
 
     private Task getTaskById(UUID id) {
         return taskRepository.findById(id)
-                .orElseThrow( () -> new ResourceNotFoundException(TASK_NOT_FOUND_MESSAGE));
+                .orElseThrow( () -> new ResourceNotFoundException(TASK_NOT_FOUND_MESSAGE + id));
     }
 }

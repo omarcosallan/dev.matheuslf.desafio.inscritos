@@ -23,12 +23,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ProblemDetail problem =
                 new ProblemDetail(
-                        "Não autorizado",
-                        "É necessário autenticação para acessar este recurso",
-                        HttpStatus.FORBIDDEN.value(),
+                        "Unauthorized",
+                        "Authentication is required to access this resource",
+                        HttpStatus.UNAUTHORIZED.value(),
                         request.getRequestURI());
 
-        response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
 

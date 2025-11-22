@@ -18,19 +18,19 @@ public class TaskValidator {
 
     public void validateTaskDueDate(Task task) {
         if (task.getDueDate().isAfter(LocalDate.now())) {
-            throw new ConflictException("Não é possível modificar uma tarefa expirada");
+            throw new ConflictException("It is not possible to modify an expired task");
         }
     }
 
     public void validateTaskStatus(Task task) {
         if (task.getStatus().equals(Status.DONE)) {
-            throw new ConflictException("Não é possível modificar uma tarefa concluída");
+            throw new ConflictException("It is not possible to modify an completed task");
         }
     }
 
     public void validateTaskName(Task task) {
         if (existsRegisteredTask(task)) {
-            throw new ConflictException("Já existe uma tarefa com esse nome neste projeto");
+            throw new ConflictException("There is already a task with this name in this project");
         }
     }
 

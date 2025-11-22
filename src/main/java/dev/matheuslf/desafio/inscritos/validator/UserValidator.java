@@ -15,7 +15,7 @@ public class UserValidator {
 
     public void validateUserEmail(User user) {
         if (existsRegisteredUser(user)) {
-            throw new ConflictException("Usuário já está cadastrado");
+            throw new ConflictException("There is already a user with this email");
         }
     }
 

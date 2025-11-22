@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidStatus {
-    String message() default "Status inválido";
+    String message() default "Invalid status";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
