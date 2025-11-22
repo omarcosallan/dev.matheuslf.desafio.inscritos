@@ -1,11 +1,8 @@
 package dev.matheuslf.desafio.inscritos.validator;
 
-import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.exception.ConflictException;
-import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
-import dev.matheuslf.desafio.inscritos.exception.ProjectEndedException;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,31 +16,15 @@ public class TaskValidator {
 
     private final TaskRepository taskRepository;
 
-    public void validateProjectEndDate(Project project) {
-        if (project.getEndDate().isBefore(LocalDate.now())) {
-            throw new ProjectEndedException("O projeto está finalizado");
-        }
-    }
-
-    public void validateDeleteTaskDueDate(Task task) {
+    public void validateTaskDueDate(Task task) {
         if (task.getDueDate().isAfter(LocalDate.now())) {
-            throw new ConflictException("Não é possível deletar uma tarefa expirada");
+            throw new ConflictException("Não é possível modificar uma tarefa expirada");
         }
     }
 
-    public void validateDeleteTaskStatus(Task task) {
+    public void validateTaskStatus(Task task) {
         if (task.getStatus().equals(Status.DONE)) {
-            throw new ConflictException("Não é possível deletar uma tarefa concluída");
-        }
-    }
-
-    public void validateTaskDueDate(LocalDate taskDueDate, Project project) {
-        if (taskDueDate != null && taskDueDate.isAfter(project.getEndDate())) {
-            throw new InvalidDateException("A data de entrega da tarefa não pode ser posterior à data de término do projeto");
-        }
-
-        if (taskDueDate != null && taskDueDate.isBefore(project.getStartDate())) {
-            throw new InvalidDateException("A data de entrega da tarefa não pode ser anterior à data de início do projeto");
+            throw new ConflictException("Não é possível modificar uma tarefa concluída");
         }
     }
 

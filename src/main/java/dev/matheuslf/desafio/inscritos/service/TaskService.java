@@ -3,7 +3,7 @@ package dev.matheuslf.desafio.inscritos.service;
 import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
-import dev.matheuslf.desafio.inscritos.dto.task.UpdateTaskDTO;
+import dev.matheuslf.desafio.inscritos.dto.task.TaskStatusUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.User;
@@ -14,6 +14,7 @@ import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
+import dev.matheuslf.desafio.inscritos.validator.ProjectValidator;
 import dev.matheuslf.desafio.inscritos.validator.TaskValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,13 +37,14 @@ public class TaskService {
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
     private final ProjectRepository projectRepository;
+    private final ProjectValidator projectValidator;
     private final UserRepository userRepository;
 
     public TaskResponseDTO save(TaskRequestDTO dto) {
         Task task = taskMapper.toEntity(dto);
 
         taskValidator.validateTaskName(task);
-        taskValidator.validateProjectEndDate(task.getProject());
+        projectValidator.validateProjectEndDate(task.getProject());
 
         task.getProject().getAssignees().add(task.getAssignee());
 
@@ -50,14 +52,12 @@ public class TaskService {
         return taskMapper.toDTO(savedTask);
     }
 
-    public TaskResponseDTO update(UUID id, UpdateTaskDTO dto) {
+    public TaskResponseDTO updateStatus(UUID id, TaskStatusUpdateDTO dto) {
         Task task = getTaskById(id);
 
-        taskValidator.validateTaskName(task);
-        taskValidator.validateProjectEndDate(task.getProject());
-        taskValidator.validateTaskDueDate(dto.dueDate(), task.getProject());
+        taskValidator.validateTaskStatus(task);
 
-        taskMapper.updateEntity(task, dto);
+        task.setStatus(Status.valueOf(dto.status()));
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDTO(savedTask);
     }
@@ -99,9 +99,9 @@ public class TaskService {
     public void delete(UUID id) {
         Task task = getTaskById(id);
 
-        taskValidator.validateProjectEndDate(task.getProject());
-        taskValidator.validateDeleteTaskDueDate(task);
-        taskValidator.validateDeleteTaskStatus(task);
+        projectValidator.validateProjectEndDate(task.getProject());
+        taskValidator.validateTaskDueDate(task);
+        taskValidator.validateTaskStatus(task);
 
         taskRepository.delete(task);
     }

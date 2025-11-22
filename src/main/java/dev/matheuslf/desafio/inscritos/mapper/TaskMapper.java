@@ -2,7 +2,6 @@ package dev.matheuslf.desafio.inscritos.mapper;
 
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
-import dev.matheuslf.desafio.inscritos.dto.task.UpdateTaskDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.User;
@@ -54,35 +53,5 @@ public class TaskMapper {
                 task.getDueDate(),
                 projectMapper.toDTO(task.getProject())
         );
-    }
-
-    public void updateEntity(Task task, UpdateTaskDTO dto) {
-        if (dto.title() != null) {
-            task.setTitle(dto.title());
-        }
-
-        if (dto.description() != null) {
-            task.setDescription(dto.description());
-        }
-
-        if (dto.status() != null) {
-            task.setStatus(Status.valueOf(dto.status().toUpperCase()));
-        }
-
-        if (dto.priority() != null) {
-            task.setPriority(Priority.valueOf(dto.priority().toUpperCase()));
-        }
-
-        if (dto.dueDate() != null) {
-            task.setDueDate(dto.dueDate());
-        }
-
-        if (dto.assigneeEmail() != null) {
-            User assignee = userRepository.findByEmail(dto.assigneeEmail())
-                    .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado"));
-            task.getProject().getAssignees().remove(task.getAssignee());
-            task.setAssignee(assignee);
-            task.getProject().getAssignees().add(task.getAssignee());
-        }
     }
 }
