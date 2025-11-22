@@ -105,6 +105,11 @@ public class TaskService {
                 .toList();
     }
 
+    public TaskResponseDTO findById(UUID id) {
+        Task task = getTaskById(id);
+        return taskMapper.toDTO(task);
+    }
+
     private Task getTaskById(UUID id) {
         return taskRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException(TASK_NOT_FOUND_MESSAGE));
