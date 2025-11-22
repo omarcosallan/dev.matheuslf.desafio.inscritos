@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,18 @@ public class GlobalExceptionHandler {
         ProblemDetail problem = new ProblemDetail(
                 "Não autorizado",
                 e.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                getRequestPath(req)
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(problem);
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<ProblemDetail> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException e, HttpServletRequest req) {
+        ProblemDetail problem = new ProblemDetail(
+                "Erro de autenticação",
+                "E-mail ou senha inválidos",
                 HttpStatus.UNAUTHORIZED.value(),
                 getRequestPath(req)
         );
