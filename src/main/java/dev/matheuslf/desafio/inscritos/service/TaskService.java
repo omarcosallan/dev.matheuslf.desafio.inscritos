@@ -51,7 +51,7 @@ public class TaskService {
 
         taskValidator.validateTaskName(task);
         taskValidator.validateProjectEndDate(task.getProject());
-        taskValidator.validateTaskDueDate(task.getDueDate(), task.getProject());
+        taskValidator.validateTaskDueDate(dto.dueDate(), task.getProject());
 
         taskMapper.updateEntity(task, dto);
         Task savedTask = taskRepository.save(task);
