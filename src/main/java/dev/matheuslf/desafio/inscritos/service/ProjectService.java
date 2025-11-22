@@ -83,6 +83,12 @@ public class ProjectService {
         return projectMapper.toDTO(updatedProject);
     }
 
+    public ProjectResponseDTO findById(UUID id) {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE));
+        return projectMapper.toDTO(project);
+    }
+
     private boolean isOwnerOrAdmin(User user, Project project) {
         return user.getEmail().equals(project.getOwner().getEmail()) || user.getRole().equals(Role.ADMIN);
     }

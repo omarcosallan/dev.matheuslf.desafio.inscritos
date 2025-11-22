@@ -49,6 +49,11 @@ public class ProjectController {
         return ResponseEntity.ok(projectService.findByOwner(ownerId));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<ProjectResponseDTO> findById(@PathVariable(value = "id") UUID id) {
+        return ResponseEntity.ok(projectService.findById(id));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ProjectResponseDTO> update(@AuthenticationPrincipal
                                                      UserDetails userDetails,
