@@ -11,6 +11,8 @@ import dev.matheuslf.desafio.inscritos.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class ProjectMapper {
@@ -25,7 +27,10 @@ public class ProjectMapper {
                 project.getDescription(),
                 project.getStartDate(),
                 project.getEndDate(),
-                userMapper.toDTO(project.getOwner())
+                userMapper.toDTO(project.getOwner()),
+                project.getAssignees() != null
+                        ? project.getAssignees().stream().map(userMapper::toDTO).toList()
+                        : List.of()
         );
     }
 

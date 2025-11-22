@@ -80,7 +80,9 @@ public class TaskMapper {
         if (dto.assigneeEmail() != null) {
             User assignee = userRepository.findByEmail(dto.assigneeEmail())
                     .orElseThrow(() -> new ResourceNotFoundException("Responsável não encontrado"));
+            task.getProject().getAssignees().remove(task.getAssignee());
             task.setAssignee(assignee);
+            task.getProject().getAssignees().add(task.getAssignee());
         }
     }
 }

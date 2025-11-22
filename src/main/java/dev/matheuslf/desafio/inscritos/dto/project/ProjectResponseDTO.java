@@ -3,6 +3,7 @@ package dev.matheuslf.desafio.inscritos.dto.project;
 import dev.matheuslf.desafio.inscritos.dto.user.UserResponseDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 public record ProjectResponseDTO(
@@ -11,6 +12,7 @@ public record ProjectResponseDTO(
         String description,
         LocalDate startDate,
         LocalDate endDate,
-        UserResponseDTO owner
+        UserResponseDTO owner,
+        List<UserResponseDTO> assignees
 ) {
 }

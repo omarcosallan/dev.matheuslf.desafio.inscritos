@@ -40,7 +40,8 @@ public class TaskService {
 
         taskValidator.validateTaskName(task);
         taskValidator.validateProjectEndDate(task.getProject());
-        taskValidator.validateTaskDueDate(task.getDueDate(), task.getProject());
+
+        task.getProject().getAssignees().add(task.getAssignee());
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDTO(savedTask);
