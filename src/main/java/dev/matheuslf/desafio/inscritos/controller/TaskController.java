@@ -4,6 +4,7 @@ import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskStatusUpdateDTO;
+import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
 import dev.matheuslf.desafio.inscritos.service.TaskService;
@@ -11,6 +12,8 @@ import dev.matheuslf.desafio.inscritos.utils.GenerateURI;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,9 +35,10 @@ public class TaskController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<TaskResponseDTO> updateStatus(@PathVariable("id") UUID id,
+    public ResponseEntity<TaskResponseDTO> updateStatus(@AuthenticationPrincipal UserDetails userDetails,
+                                                        @PathVariable("id") UUID id,
                                                         @Valid @RequestBody TaskStatusUpdateDTO dto) {
-        return ResponseEntity.ok(taskService.updateStatus(id, dto));
+        return ResponseEntity.ok(taskService.updateStatus((User) userDetails, id, dto));
     }
 
     @GetMapping("/project/{projectId}")

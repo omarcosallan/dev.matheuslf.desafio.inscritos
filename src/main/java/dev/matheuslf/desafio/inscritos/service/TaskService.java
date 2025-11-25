@@ -8,7 +8,9 @@ import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
+import dev.matheuslf.desafio.inscritos.entities.enums.Role;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
+import dev.matheuslf.desafio.inscritos.exception.BusinessException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
@@ -52,8 +54,12 @@ public class TaskService {
         return taskMapper.toDTO(savedTask);
     }
 
-    public TaskResponseDTO updateStatus(UUID id, TaskStatusUpdateDTO dto) {
+    public TaskResponseDTO updateStatus(User user, UUID id, TaskStatusUpdateDTO dto) {
         Task task = getTaskById(id);
+
+        if (!(user.getRole().equals(Role.ADMIN) || task.getAssignee().getEmail().equals(user.getEmail()))) {
+            throw new BusinessException("You do not have permission to update the status of this task");
+        }
 
         taskValidator.validateTaskStatus(task);
 
