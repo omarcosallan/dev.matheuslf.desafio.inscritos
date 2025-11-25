@@ -14,25 +14,24 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    @Value("${gestao.projetos.api.security.secret}")
-    private String secret;
+    private final Algorithm algorithm;
 
-    @Value("${gestao.projetos.api.issue}")
+    @Value("${spring.security.token.issue}")
     private String issue;
 
+    public TokenService(@Value("${spring.security.token.secret}") String secret) {
+        this.algorithm = Algorithm.HMAC256(secret);
+    }
+
     public String generateToken(User user) {
-        Algorithm algorithm = Algorithm.HMAC256(secret);
         return JWT.create()
                 .withSubject(user.getEmail())
-                .withClaim("role", user.getRole().toString())
                 .withIssuer(issue)
                 .withExpiresAt(Date.from(generateExpirationDate()))
                 .sign(algorithm);
-
     }
 
     public String validateToken(String token) {
-        Algorithm algorithm = Algorithm.HMAC256(secret);
         return JWT.require(algorithm)
                 .withIssuer(issue)
                 .build()

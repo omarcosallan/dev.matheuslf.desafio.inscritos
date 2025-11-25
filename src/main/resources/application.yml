@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/projects_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:admin}
+  jpa:
+    hibernate:
+      ddl-auto: ${HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: ${FORMAT_SQL:false}
+  security:
+    token:
+      secret: ${SECURITY_TOKEN_SECRET:secret-jwt-token-key-dev}
+      issue: ${SECURITY_TOKEN_ISSUE:gestao-projetos-api}
