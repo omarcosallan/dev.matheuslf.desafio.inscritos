@@ -9,9 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -37,6 +35,12 @@ public class User extends Auditable implements UserDetails {
 
     @Column(nullable = false)
     private boolean enabled = true;
+
+    @ManyToMany(mappedBy = "assignees")
+    private Set<Project> projects = new HashSet<>();
+
+    @OneToMany(mappedBy = "assignee")
+    private Set<Task> tasks = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

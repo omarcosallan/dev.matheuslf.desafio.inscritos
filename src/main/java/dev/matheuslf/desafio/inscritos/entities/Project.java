@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "projects")
@@ -42,7 +40,10 @@ public class Project extends Auditable {
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> assignees = new ArrayList<>();
+    private Set<User> assignees = new HashSet<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Task> tasks = new HashSet<>();
 
     public Project(String name, String description, LocalDate startDate, LocalDate endDate) {
         this.name = name;
