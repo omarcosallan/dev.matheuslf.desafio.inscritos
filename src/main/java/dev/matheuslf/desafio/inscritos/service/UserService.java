@@ -3,12 +3,15 @@ package dev.matheuslf.desafio.inscritos.service;
 import dev.matheuslf.desafio.inscritos.dto.user.UserRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.user.UserResponseDTO;
 import dev.matheuslf.desafio.inscritos.entities.User;
+import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.UserMapper;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
 import dev.matheuslf.desafio.inscritos.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +28,10 @@ public class UserService {
         userValidator.validateUserEmail(user);
         User savedUser = userRepository.save(user);
         return userMapper.toDTO(savedUser);
+    }
+
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + id));
     }
 }

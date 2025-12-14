@@ -4,7 +4,6 @@ import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskStatusUpdateDTO;
-import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
@@ -14,15 +13,14 @@ import dev.matheuslf.desafio.inscritos.exception.BusinessException;
 import dev.matheuslf.desafio.inscritos.exception.ConflictException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
-import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
-import dev.matheuslf.desafio.inscritos.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,9 +36,9 @@ public class TaskService {
     private static final String TASK_NOT_FOUND_MESSAGE = "Task not found with id: ";
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-    private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final ProjectService projectService;
 
+    @Transactional
     public TaskResponseDTO save(TaskRequestDTO dto) {
         Task task = taskMapper.toEntity(dto);
 
@@ -52,12 +50,14 @@ public class TaskService {
             throw new BusinessException("Project has already ended");
         }
 
-        task.getProject().getAssignees().add(task.getAssignee());
+        task.getProject().addAssignee(task.getAssignee());
+        projectService.save(task.getProject());
 
         Task savedTask = taskRepository.save(task);
         return taskMapper.toDTO(savedTask);
     }
 
+    @Transactional
     public TaskResponseDTO updateStatus(User user, UUID id, TaskStatusUpdateDTO dto) {
         Task task = taskRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException(TASK_NOT_FOUND_MESSAGE + id));
@@ -109,6 +109,7 @@ public class TaskService {
         );
     }
 
+    @Transactional
     public void delete(UUID id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow( () -> new ResourceNotFoundException(TASK_NOT_FOUND_MESSAGE + id));
@@ -117,7 +118,7 @@ public class TaskService {
             throw new BusinessException("Project has already ended");
         }
 
-        if (task.getDueDate().isAfter(LocalDate.now())) {
+        if (task.getDueDate().isBefore(LocalDate.now())) {
             throw new ConflictException("It is not possible to modify an expired task");
         }
 
@@ -125,14 +126,14 @@ public class TaskService {
             throw new ConflictException("It is not possible to modify an completed task");
         }
 
+        task.getProject().removeAssignee(task.getAssignee());
+        projectService.save(task.getProject());
+
         taskRepository.delete(task);
     }
 
     public List<TaskResponseDTO> findByProject(UUID projectId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow( () -> new ResourceNotFoundException("Project not found with id: " + projectId));
-
-        return taskRepository.findAllByProject(project).stream()
+        return taskRepository.findAllByProjectId(projectId).stream()
                 .map(taskMapper::toDTO)
                 .toList();
     }
@@ -145,10 +146,7 @@ public class TaskService {
     }
 
     public List<TaskResponseDTO> findByAssignee(UUID assigneeId) {
-        User assignee = userRepository.findById(assigneeId)
-                .orElseThrow( () -> new ResourceNotFoundException("Assignee not found with id: " + assigneeId));
-
-        return taskRepository.findAllByAssignee(assignee).stream()
+        return taskRepository.findAllByAssigneeId(assigneeId).stream()
                 .map(taskMapper::toDTO)
                 .toList();
     }

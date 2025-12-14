@@ -13,12 +13,12 @@ import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.ProjectMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
-import dev.matheuslf.desafio.inscritos.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,8 +31,9 @@ public class ProjectService {
     private static final String PROJECT_NOT_FOUND_MESSAGE = "Project not found with id: ";
     private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
+    @Transactional
     public ProjectResponseDTO save(ProjectRequestDTO dto) {
         Project project = projectMapper.toEntity(dto);
 
@@ -44,13 +45,19 @@ public class ProjectService {
             throw new InvalidDateException("Project's start date must be before the end date");
         }
 
-        Project savedProject = projectRepository.save(project);
+        Project savedProject = save(project);
+
         return projectMapper.toDTO(savedProject);
+    }
+
+    public Project save(Project project) {
+        return projectRepository.save(project);
     }
 
     public PageResponse<ProjectResponseDTO> findAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Project> projects = projectRepository.findAll(pageable);
+
         return new PageResponse<>(
                 projects.getContent().stream().map(projectMapper::toDTO).toList(),
                 projects.getNumber(),
@@ -63,13 +70,14 @@ public class ProjectService {
     }
 
     public List<ProjectResponseDTO> findByOwnerOrAssignee(UUID userId) {
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + userId));
+        User owner = userService.findById(userId);
+
         return projectRepository.findByOwnerOrAssignee(owner).stream()
                 .map(projectMapper::toDTO)
                 .toList();
     }
 
+    @Transactional
     public ProjectResponseDTO update(User user, UUID id, ProjectUpdateDTO dto) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE + id));
@@ -83,13 +91,15 @@ public class ProjectService {
         }
 
         projectMapper.updateEntity(project, dto);
-        Project updatedProject = projectRepository.save(project);
+        Project updatedProject = save(project);
+
         return projectMapper.toDTO(updatedProject);
     }
 
     public ProjectResponseDTO findById(UUID id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(PROJECT_NOT_FOUND_MESSAGE + id));
+
         return projectMapper.toDTO(project);
     }
 

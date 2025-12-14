@@ -34,7 +34,7 @@ public class Project extends Auditable {
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_projects",
             joinColumns = @JoinColumn(name = "project_id"),
@@ -50,5 +50,13 @@ public class Project extends Auditable {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void addAssignee(User user) {
+        assignees.add(user);
+    }
+
+    public void removeAssignee(User user) {
+        assignees.remove(user);
     }
 }
