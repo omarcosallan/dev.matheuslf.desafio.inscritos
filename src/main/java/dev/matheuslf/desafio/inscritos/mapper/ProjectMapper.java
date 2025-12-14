@@ -2,77 +2,28 @@ package dev.matheuslf.desafio.inscritos.mapper;
 
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.ProjectSimpleResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
-import dev.matheuslf.desafio.inscritos.entities.User;
-import dev.matheuslf.desafio.inscritos.exception.InvalidDateException;
-import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
-import dev.matheuslf.desafio.inscritos.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Component
-@RequiredArgsConstructor
-public class ProjectMapper {
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
+public interface ProjectMapper {
 
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    ProjectMapper INSTANCE = Mappers.getMapper(ProjectMapper.class);
 
-    public ProjectResponseDTO toDTO(Project project) {
-        return new ProjectResponseDTO(
-                project.getId(),
-                project.getName(),
-                project.getDescription(),
-                project.getStartDate(),
-                project.getEndDate(),
-                userMapper.toDTO(project.getOwner()),
-                project.getAssignees() != null
-                        ? project.getAssignees().stream().map(userMapper::toDTO).toList()
-                        : List.of()
-        );
-    }
+    ProjectResponseDTO toDTO(Project project);
 
-    public Project toEntity(ProjectRequestDTO dto) {
-        User owner = userRepository.findByEmail(dto.ownerEmail())
-                .orElseThrow( () -> new ResourceNotFoundException("Owner not found with email: " + dto.ownerEmail()));
-        Project project = new Project();
-        project.setName(dto.name());
-        project.setDescription(dto.description());
-        project.setStartDate(dto.startDate());
-        project.setEndDate(dto.endDate());
-        project.setOwner(owner);
-        return project;
-    }
+    List<ProjectSimpleResponseDTO> toDTO(List<Project> projects);
 
-    public void updateEntity(Project project, ProjectUpdateDTO dto) {
-        if (dto.name() != null) {
-            project.setName(dto.name());
-        }
+    Project toEntity(ProjectRequestDTO dto);
 
-        if (dto.description() != null) {
-            project.setDescription(dto.description());
-        }
-
-        if (dto.startDate() != null) {
-            if (dto.endDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
-                throw new InvalidDateException("Project's start date must be before the end date");
-            }
-            project.setStartDate(dto.startDate());
-        }
-
-        if (dto.endDate() != null) {
-            if (dto.endDate().isBefore(dto.startDate()) || dto.endDate().isBefore(project.getStartDate())) {
-                throw new InvalidDateException("Project's start date must be before the end date");
-            }
-            project.setEndDate(dto.endDate());
-        }
-
-        if (dto.ownerEmail() != null) {
-            User owner = userRepository.findByEmail(dto.ownerEmail())
-                    .orElseThrow( () -> new ResourceNotFoundException("Owner not found with email: " + dto.ownerEmail()));
-            project.setOwner(owner);
-        }
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    void updateEntity(ProjectUpdateDTO dto, @MappingTarget Project project);
 }

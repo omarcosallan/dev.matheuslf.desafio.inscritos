@@ -3,6 +3,7 @@ package dev.matheuslf.desafio.inscritos.service;
 import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.ProjectSimpleResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.User;
@@ -35,7 +36,10 @@ public class ProjectService {
 
     @Transactional
     public ProjectResponseDTO save(ProjectRequestDTO dto) {
+        User owner = userService.findByEmail(dto.ownerEmail());
+
         Project project = projectMapper.toEntity(dto);
+        project.setOwner(owner);
 
         if (existsRegisteredProject(project)) {
             throw new ConflictException("There is already a project with this name");
@@ -54,12 +58,12 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public PageResponse<ProjectResponseDTO> findAll(Integer page, Integer size) {
+    public PageResponse<ProjectSimpleResponseDTO> findAll(Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Project> projects = projectRepository.findAll(pageable);
 
         return new PageResponse<>(
-                projects.getContent().stream().map(projectMapper::toDTO).toList(),
+                projectMapper.toDTO(projects.getContent()),
                 projects.getNumber(),
                 projects.getTotalPages(),
                 projects.getTotalElements(),
@@ -69,12 +73,10 @@ public class ProjectService {
         );
     }
 
-    public List<ProjectResponseDTO> findByOwnerOrAssignee(UUID userId) {
+    public List<ProjectSimpleResponseDTO> findByOwnerOrAssignee(UUID userId) {
         User owner = userService.findById(userId);
 
-        return projectRepository.findByOwnerOrAssignee(owner).stream()
-                .map(projectMapper::toDTO)
-                .toList();
+        return projectMapper.toDTO(projectRepository.findByOwnerOrAssignee(owner));
     }
 
     @Transactional
@@ -90,7 +92,26 @@ public class ProjectService {
             throw new ConflictException("There is already a project with this name");
         }
 
-        projectMapper.updateEntity(project, dto);
+        if (dto.startDate() != null && dto.endDate() != null) {
+            if (dto.endDate().isBefore(dto.startDate())) {
+                throw new InvalidDateException("Project's start date must be before the end date");
+            }
+        } else if (dto.startDate() != null) {
+            if (project.getEndDate().isBefore(dto.startDate())) {
+                throw new InvalidDateException("Project's new start date cannot be after the current end date");
+            }
+        } else if (dto.endDate() != null) {
+            if (dto.endDate().isBefore(project.getStartDate())) {
+                throw new InvalidDateException("Project's new end date cannot be before the current start date");
+            }
+        }
+
+        if (dto.ownerEmail() != null) {
+            User newOwner = userService.findByEmail(dto.ownerEmail());
+            project.setOwner(newOwner);
+        }
+
+        projectMapper.updateEntity(dto, project);
         Project updatedProject = save(project);
 
         return projectMapper.toDTO(updatedProject);

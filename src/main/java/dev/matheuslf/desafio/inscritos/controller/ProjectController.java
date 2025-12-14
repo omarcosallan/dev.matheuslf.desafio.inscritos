@@ -3,6 +3,7 @@ package dev.matheuslf.desafio.inscritos.controller;
 import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectResponseDTO;
+import dev.matheuslf.desafio.inscritos.dto.project.ProjectSimpleResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.project.ProjectUpdateDTO;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.service.ProjectService;
@@ -33,7 +34,7 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<ProjectResponseDTO>> findAll(@RequestParam(required = false, defaultValue = "0")
+    public ResponseEntity<PageResponse<ProjectSimpleResponseDTO>> findAll(@RequestParam(required = false, defaultValue = "0")
                                                                     Integer page,
                                                                     @RequestParam(required = false, defaultValue = "10")
                                                                     Integer size) {
@@ -41,7 +42,7 @@ public class ProjectController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ProjectResponseDTO>> findByOwnerOrAssignee(@PathVariable(value = "userId") UUID userId) {
+    public ResponseEntity<List<ProjectSimpleResponseDTO>> findByOwnerOrAssignee(@PathVariable(value = "userId") UUID userId) {
         return ResponseEntity.ok(projectService.findByOwnerOrAssignee(userId));
     }
 
