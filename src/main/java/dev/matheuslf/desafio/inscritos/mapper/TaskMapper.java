@@ -2,56 +2,37 @@ package dev.matheuslf.desafio.inscritos.mapper;
 
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
-import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
-import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
 import dev.matheuslf.desafio.inscritos.entities.enums.Status;
-import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
-import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
-import dev.matheuslf.desafio.inscritos.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
-@Component
-@RequiredArgsConstructor
-public class TaskMapper {
+@Mapper(componentModel = "spring", uses = {UserMapper.class, ProjectMapper.class})
+public interface TaskMapper {
 
-    private final ProjectRepository projectRepository;
-    private final ProjectMapper projectMapper;
-    private final UserRepository userRepository;
-    private final UserMapper userMapper;
+    TaskResponseDTO toDTO(Task task);
 
-    public Task toEntity(TaskRequestDTO dto) {
-        Project project = projectRepository.findByName(dto.projectName())
-                .orElseThrow(() -> new ResourceNotFoundException("Project not found with name: " + dto.projectName()));
-        User assignee = userRepository.findByEmail(dto.assigneeEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("Assignee not found with email: " + dto.assigneeEmail()));
-        Task task = new Task();
-        task.setTitle(dto.title());
-        task.setDescription(dto.description());
-        if (dto.status() != null) {
-            task.setStatus(Status.valueOf(dto.status().toUpperCase()));
+    @Mapping(target = "project", ignore = true)
+    @Mapping(target = "assignee", ignore = true)
+    @Mapping(target = "status", source = "status", qualifiedByName = "mapStringToStatus")
+    @Mapping(target = "priority", source = "priority", qualifiedByName = "mapStringToPriority")
+    Task toEntity(TaskRequestDTO dto);
+
+    @Named("mapStringToStatus")
+    default Status mapStringToStatus(String status) {
+        if (status == null) {
+            return null;
         }
-        if (dto.priority() != null) {
-            task.setPriority(Priority.valueOf(dto.priority().toUpperCase()));
-        }
-        task.setDueDate(dto.dueDate());
-        task.setProject(project);
-        task.setAssignee(assignee);
-        return task;
+        return Status.valueOf(status.toUpperCase());
     }
 
-    public TaskResponseDTO toDTO(Task task) {
-        return new TaskResponseDTO(
-                task.getId(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getStatus(),
-                task.getPriority(),
-                userMapper.toDTO(task.getAssignee()),
-                task.getDueDate(),
-                projectMapper.toDTO(task.getProject())
-        );
+    @Named("mapStringToPriority")
+    default Priority mapStringToPriority(String priority) {
+        if (priority == null) {
+            return null;
+        }
+        return Priority.valueOf(priority.toUpperCase());
     }
 }

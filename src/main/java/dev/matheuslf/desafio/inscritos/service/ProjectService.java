@@ -124,6 +124,11 @@ public class ProjectService {
         return projectMapper.toDTO(project);
     }
 
+    public Project findByName(String name) {
+        return projectRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Project not found with name: " + name));
+    }
+
     private boolean isOwnerOrAdmin(User user, Project project) {
         return user.getEmail().equals(project.getOwner().getEmail()) || user.getRole().equals(Role.ADMIN);
     }

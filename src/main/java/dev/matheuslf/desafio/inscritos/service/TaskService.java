@@ -4,6 +4,7 @@ import dev.matheuslf.desafio.inscritos.dto.pagination.PageResponse;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskResponseDTO;
 import dev.matheuslf.desafio.inscritos.dto.task.TaskStatusUpdateDTO;
+import dev.matheuslf.desafio.inscritos.entities.Project;
 import dev.matheuslf.desafio.inscritos.entities.Task;
 import dev.matheuslf.desafio.inscritos.entities.User;
 import dev.matheuslf.desafio.inscritos.entities.enums.Priority;
@@ -37,10 +38,17 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
     private final ProjectService projectService;
+    private final UserService userService;
 
     @Transactional
     public TaskResponseDTO save(TaskRequestDTO dto) {
+        Project project = projectService.findByName(dto.projectName());
+        User assignee = userService.findByEmail(dto.assigneeEmail());
+
         Task task = taskMapper.toEntity(dto);
+
+        task.setProject(project);
+        task.setAssignee(assignee);
 
         if (existsRegisteredTask(task)) {
             throw new ConflictException("There is already a task with this name in this project");
