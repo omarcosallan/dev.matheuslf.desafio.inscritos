@@ -3,14 +3,15 @@ package dev.matheuslf.desafio.inscritos.service;
 import dev.matheuslf.desafio.inscritos.dto.user.UserRequestDTO;
 import dev.matheuslf.desafio.inscritos.dto.user.UserResponseDTO;
 import dev.matheuslf.desafio.inscritos.entities.User;
+import dev.matheuslf.desafio.inscritos.exception.ConflictException;
 import dev.matheuslf.desafio.inscritos.exception.ResourceNotFoundException;
 import dev.matheuslf.desafio.inscritos.mapper.UserMapper;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
-import dev.matheuslf.desafio.inscritos.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,12 +21,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
-    private final UserValidator userValidator;
 
     public UserResponseDTO save(UserRequestDTO dto) {
         User user = userMapper.toEntity(dto);
         user.setPassword(encoder.encode(user.getPassword()));
-        userValidator.validateUserEmail(user);
+
+        if (existsRegisteredUser(user)) {
+            throw new ConflictException("There is already a user with this email");
+        }
+
         User savedUser = userRepository.save(user);
         return userMapper.toDTO(savedUser);
     }
@@ -33,5 +37,15 @@ public class UserService {
     public User findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + id));
+    }
+
+    private boolean existsRegisteredUser(User user) {
+        Optional<User> foundUser = userRepository.findByEmail(user.getEmail());
+
+        if (user.getId() == null) {
+            return foundUser.isPresent();
+        }
+
+        return foundUser.isPresent() && !user.getId().equals(foundUser.get().getId());
     }
 }
