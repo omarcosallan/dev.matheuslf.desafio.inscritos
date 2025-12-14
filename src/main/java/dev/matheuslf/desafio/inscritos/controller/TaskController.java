@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @GetMapping("/project/{projectId}")
-    public ResponseEntity<List<TaskResponseDTO>> findByProject(@PathVariable(value = "projectId")UUID projectId) {
+    public ResponseEntity<List<TaskResponseDTO>> findByProject(@PathVariable(value = "projectId") UUID projectId) {
         return ResponseEntity.ok(taskService.findByProject(projectId));
     }
 
@@ -53,18 +53,12 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<PageResponse<TaskResponseDTO>> findAllWithParams(
-            @RequestParam(value = "title", required = false)
-            String title,
-            @RequestParam(value = "status", required = false)
-            Status status,
-            @RequestParam(value = "priority", required = false)
-            Priority priority,
-            @RequestParam(value = "projectId", required = false)
-            UUID projectId,
-            @RequestParam(value = "page", defaultValue = "0")
-            Integer page,
-            @RequestParam(value = "size", defaultValue = "10")
-            Integer size
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) Status status,
+            @RequestParam(required = false) Priority priority,
+            @RequestParam(required = false) UUID projectId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
         return ResponseEntity.ok(taskService.findAllWithParams(title, status, priority, projectId, page, size));
     }

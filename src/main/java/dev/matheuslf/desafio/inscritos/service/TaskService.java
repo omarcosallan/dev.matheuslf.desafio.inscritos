@@ -84,23 +84,7 @@ public class TaskService {
     }
 
     public PageResponse<TaskResponseDTO> findAllWithParams(String title, Status status, Priority priority, UUID projectId, Integer page, Integer size) {
-        Specification<Task> specs = null;
-
-        if (title != null) {
-            specs = title(title);
-        }
-
-        if (status != null) {
-            specs = specs == null ? status(status) : specs.and(status(status));
-        }
-
-        if (priority != null) {
-            specs = specs == null ? priority(priority) : specs.and(priority(priority));
-        }
-
-        if (projectId != null) {
-            specs = (specs == null) ? projectId(projectId) : specs.and(projectId(projectId));
-        }
+        Specification<Task> specs = create(title, status, priority, projectId);
 
         Pageable pageRequest = PageRequest.of(page, size);
 

@@ -9,19 +9,32 @@ import java.util.UUID;
 
 public class TaskSpec {
 
-    public static Specification<Task> title(String title) {
+    public static Specification<Task> create(String title, Status status, Priority priority, UUID projectId) {
+        return Specification.allOf(
+                title(title),
+                status(status),
+                priority(priority),
+                projectId(projectId)
+        );
+    }
+
+    private static Specification<Task> title(String title) {
+        if (title == null) return null;
         return (root, query, builder) -> builder.equal(root.get("title"), title);
     }
 
-    public static Specification<Task> status(Status status) {
+    private static Specification<Task> status(Status status) {
+        if (status == null) return null;
         return (root, query, builder) -> builder.equal(root.get("status"), status);
     }
 
-    public static Specification<Task> priority(Priority priority) {
+    private static Specification<Task> priority(Priority priority) {
+        if (priority == null) return null;
         return (root, query, builder) -> builder.equal(root.get("priority"), priority);
     }
 
-    public static Specification<Task> projectId(UUID projectId) {
+    private static Specification<Task> projectId(UUID projectId) {
+        if (projectId == null) return null;
         return (root, query, builder) -> builder.equal(root.get("project").get("id"), projectId);
     }
 }
