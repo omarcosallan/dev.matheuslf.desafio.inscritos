@@ -16,7 +16,6 @@ import dev.matheuslf.desafio.inscritos.mapper.TaskMapper;
 import dev.matheuslf.desafio.inscritos.repository.ProjectRepository;
 import dev.matheuslf.desafio.inscritos.repository.TaskRepository;
 import dev.matheuslf.desafio.inscritos.repository.UserRepository;
-import dev.matheuslf.desafio.inscritos.validator.ProjectValidator;
 import dev.matheuslf.desafio.inscritos.validator.TaskValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,14 +39,16 @@ public class TaskService {
     private final TaskValidator taskValidator;
     private final TaskMapper taskMapper;
     private final ProjectRepository projectRepository;
-    private final ProjectValidator projectValidator;
     private final UserRepository userRepository;
 
     public TaskResponseDTO save(TaskRequestDTO dto) {
         Task task = taskMapper.toEntity(dto);
 
         taskValidator.validateTaskName(task);
-        projectValidator.validateProjectEndDate(task.getProject());
+
+        if (task.getProject().getEndDate().isBefore(LocalDate.now())) {
+            throw new BusinessException("Project has already ended");
+        }
 
         task.getProject().getAssignees().add(task.getAssignee());
 
@@ -105,7 +107,10 @@ public class TaskService {
     public void delete(UUID id) {
         Task task = getTaskById(id);
 
-        projectValidator.validateProjectEndDate(task.getProject());
+        if (task.getProject().getEndDate().isBefore(LocalDate.now())) {
+            throw new BusinessException("Project has already ended");
+        }
+
         taskValidator.validateTaskDueDate(task);
         taskValidator.validateTaskStatus(task);
 
