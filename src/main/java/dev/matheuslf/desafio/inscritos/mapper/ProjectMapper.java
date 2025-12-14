@@ -8,14 +8,11 @@ import dev.matheuslf.desafio.inscritos.entities.Project;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {UserMapper.class})
 public interface ProjectMapper {
-
-    ProjectMapper INSTANCE = Mappers.getMapper(ProjectMapper.class);
 
     ProjectResponseDTO toDTO(Project project);
 
