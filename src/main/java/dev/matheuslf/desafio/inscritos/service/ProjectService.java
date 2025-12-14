@@ -75,8 +75,7 @@ public class ProjectService {
 
     public List<ProjectSimpleResponseDTO> findByOwnerOrAssignee(UUID userId) {
         User owner = userService.findById(userId);
-
-        return projectMapper.toDTO(projectRepository.findByOwnerOrAssignee(owner));
+        return projectMapper.toDTO(owner.getProjects().stream().toList());
     }
 
     @Transactional

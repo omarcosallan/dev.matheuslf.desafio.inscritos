@@ -36,8 +36,11 @@ public class User extends Auditable implements UserDetails {
     @Column(nullable = false)
     private boolean enabled = true;
 
-    @ManyToMany(mappedBy = "assignees")
-    private Set<Project> projects = new HashSet<>();
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private Set<Project> ownedProjects = new HashSet<>();
+
+    @ManyToMany(mappedBy = "assignees", fetch = FetchType.LAZY)
+    private Set<Project> assignedProjects = new HashSet<>();
 
     @OneToMany(mappedBy = "assignee")
     private Set<Task> tasks = new HashSet<>();
@@ -50,5 +53,14 @@ public class User extends Auditable implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public Set<Project> getProjects() {
+        Set<Project> allProjects = new HashSet<>();
+
+        allProjects.addAll(ownedProjects);
+        allProjects.addAll(assignedProjects);
+
+        return allProjects;
     }
 }
